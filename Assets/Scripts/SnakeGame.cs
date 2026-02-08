@@ -40,6 +40,10 @@ public class SnakeGame : MonoBehaviour
     private bool started;
     private bool paused;
 
+    // Score multiplier
+    private float scoreMultiplier = 1f;
+    private float multiplierTimer;
+
     // Level/Progress
     private int level;
     private bool inTransition;
@@ -88,7 +92,7 @@ public class SnakeGame : MonoBehaviour
     private Color[,] originalTileColors;
 
     // UI
-    private Text scoreText, messageText, levelText, progressText;
+    private Text scoreText, messageText, levelText, progressText, multiplierText;
     private GameObject messagePanel, pausePanel;
     private Text pauseText;
     private Image progressFill;
@@ -216,6 +220,17 @@ public class SnakeGame : MonoBehaviour
         if (panicTimer > 0f)
             panicTimer -= Time.deltaTime;
 
+        // Score multiplier countdown
+        if (multiplierTimer > 0f)
+        {
+            multiplierTimer -= Time.deltaTime;
+            if (multiplierTimer <= 0f)
+            {
+                scoreMultiplier = 1f;
+                UpdateHUD();
+            }
+        }
+
         HandleInput();
         AnimateFood();
 
@@ -287,6 +302,8 @@ public class SnakeGame : MonoBehaviour
         fogInnerRadius = baseFogInner;
         fogOuterRadius = baseFogOuter;
         if (heartbeatSource) heartbeatSource.volume = 0f;
+        scoreMultiplier = 1f;
+        multiplierTimer = 0f;
 
         ResetSnake();
         GenerateLayout();
@@ -447,6 +464,24 @@ public class SnakeGame : MonoBehaviour
             return; // skip food/shrink this tick
         }
 
+        // === NUMBER HINT MULTIPLIER ===
+        if (!mineGrid[head.x, head.y] && mineCountGrid[head.x, head.y] > 0)
+        {
+            int count = mineCountGrid[head.x, head.y];
+            if (count == 1)
+            {
+                // Flat bonus for passing a "1" tile
+                score += (int)(15 * level * scoreMultiplier);
+            }
+            else
+            {
+                // Count 2/3/4 = score multiplier for 5 seconds
+                scoreMultiplier = count;
+                multiplierTimer = 5f;
+            }
+            UpdateHUD();
+        }
+
         // === FOOD CHECK ===
         int foodIdx = -1;
         for (int i = 0; i < foodPositions.Count; i++)
@@ -463,7 +498,7 @@ public class SnakeGame : MonoBehaviour
         {
             EatFood(foodIdx);
             AddSegment();
-            score += 10 * level;
+            score += (int)(10 * level * scoreMultiplier);
             foodEatenThisLevel++;
             UpdateHUD();
             if (audioSource && clipEat) audioSource.PlayOneShot(clipEat, 1f);
@@ -488,9 +523,12 @@ public class SnakeGame : MonoBehaviour
             }
             StartCoroutine(ShrinkSparkle(tailPos));
             if (audioSource && clipShrink) audioSource.PlayOneShot(clipShrink, 0.4f);
-            score += 25 * level;
+            score += (int)(25 * level * scoreMultiplier);
         }
         if (shrinks > 0) UpdateHUD();
+
+        // === MINE ENCIRCLEMENT ===
+        CheckMineEncirclement();
 
         SyncVisuals();
 
@@ -1396,6 +1434,19 @@ public class SnakeGame : MonoBehaviour
         outline.effectColor = Color.black;
         outline.effectDistance = new Vector2(2, 2);
 
+        // Multiplier text (below score, center)
+        multiplierText = MakeText(canvasGo.transform, "MultiplierText", 32, TextAnchor.UpperCenter);
+        multiplierText.color = new Color(1f, 0.9f, 0.2f);
+        var mxrt = multiplierText.rectTransform;
+        mxrt.anchorMin = new Vector2(0, 1);
+        mxrt.anchorMax = Vector2.one;
+        mxrt.pivot = new Vector2(0.5f, 1);
+        mxrt.sizeDelta = new Vector2(0, 40);
+        mxrt.anchoredPosition = new Vector2(0, -48);
+        var mxol = multiplierText.gameObject.AddComponent<Outline>();
+        mxol.effectColor = Color.black;
+        mxol.effectDistance = new Vector2(2, 2);
+
         // Level text (top left)
         levelText = MakeText(canvasGo.transform, "LevelText", 30, TextAnchor.UpperLeft);
         var lrt = levelText.rectTransform;
@@ -1522,6 +1573,14 @@ public class SnakeGame : MonoBehaviour
         levelText.text = level > 10 ? $"ENDLESS {level}" : $"LEVEL {level}";
         progressFill.fillAmount = totalFoodThisLevel > 0 ? (float)foodEatenThisLevel / totalFoodThisLevel : 0;
         progressText.text = $"{foodEatenThisLevel}/{totalFoodThisLevel}";
+
+        if (multiplierText)
+        {
+            if (scoreMultiplier > 1f && multiplierTimer > 0f)
+                multiplierText.text = $"x{scoreMultiplier:F0}  ({multiplierTimer:F1}s)";
+            else
+                multiplierText.text = "";
+        }
     }
 
     private void ShowMessage(string text)
@@ -1675,6 +1734,133 @@ public class SnakeGame : MonoBehaviour
 
         root.gameObject.SetActive(false); // hidden until fog reveals
         return root;
+    }
+
+    // ===================== MINE ENCIRCLEMENT =====================
+
+    private void CheckMineEncirclement()
+    {
+        var snakeSet = new HashSet<Vector2Int>(snake);
+        var toDefuse = new List<Vector2Int>();
+
+        for (int i = 0; i < minePositions.Count; i++)
+        {
+            Vector2Int mp = minePositions[i];
+            if (!mineGrid[mp.x, mp.y]) continue;
+
+            // All 4 neighbors must be blocked (wall, snake, or obstacle)
+            // At least 2 must be snake body (player actively encircled it)
+            bool allBlocked = true;
+            int snakeNeighbors = 0;
+            Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+            foreach (var dir in dirs)
+            {
+                Vector2Int n = mp + dir;
+                if (n.x < 0 || n.x >= gridWidth || n.y < 0 || n.y >= gridHeight)
+                    continue; // wall = blocked
+                if (snakeSet.Contains(n))
+                    snakeNeighbors++;
+                else if (obstacles.Contains(n))
+                    { } // obstacle = blocked
+                else
+                    { allBlocked = false; break; }
+            }
+
+            if (allBlocked && snakeNeighbors >= 2)
+                toDefuse.Add(mp);
+        }
+
+        foreach (var mp in toDefuse)
+        {
+            // Safe detonation — no growth, no fog shrink, no panic
+            mineGrid[mp.x, mp.y] = false;
+
+            // Destroy mine visual
+            int mIdx = minePositions.IndexOf(mp);
+            if (mIdx >= 0 && mIdx < mineVisuals.Count && mineVisuals[mIdx])
+            {
+                Destroy(mineVisuals[mIdx].gameObject);
+                mineVisuals[mIdx] = null;
+            }
+
+            RecalculateCountsAround(mp.x, mp.y);
+            UpdateAllNumberHints();
+
+            // Green-tinted crater (defused, not detonated)
+            if (tileRenderers[mp.x, mp.y])
+            {
+                Color defuseColor = new Color(0.08f, 0.25f, 0.12f);
+                tileBaseColors[mp.x, mp.y] = defuseColor;
+                var mat = tileRenderers[mp.x, mp.y].material;
+                mat.SetColor("_BaseColor", defuseColor);
+                mat.SetColor("_Color", defuseColor);
+            }
+
+            // Major score bonus (affected by multiplier)
+            score += (int)(100 * level * scoreMultiplier);
+
+            // Defuse effect (green implosion)
+            StartCoroutine(DefuseEffect(GridToWorld(mp, 0.3f)));
+            if (audioSource && clipShrink) audioSource.PlayOneShot(clipShrink, 0.8f);
+        }
+
+        if (toDefuse.Count > 0) UpdateHUD();
+    }
+
+    private IEnumerator DefuseEffect(Vector3 worldPos)
+    {
+        Shader shader = Shader.Find("Universal Render Pipeline/Unlit");
+        if (!shader) shader = Shader.Find("Unlit/Color");
+        if (!shader) shader = Shader.Find("Universal Render Pipeline/Lit");
+
+        var particles = new List<Transform>();
+        int count = 10;
+        Color defuseColor = new Color(0.2f, 1f, 0.5f);
+
+        // Particles start spread out and implode inward
+        var startOffsets = new List<Vector3>();
+        for (int i = 0; i < count; i++)
+        {
+            float angle = i * (360f / count) * Mathf.Deg2Rad;
+            Vector3 offset = new Vector3(Mathf.Sin(angle), 0.5f, Mathf.Cos(angle)) * 0.8f;
+            startOffsets.Add(offset);
+
+            var p = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            p.name = "DefuseParticle";
+            Destroy(p.GetComponent<Collider>());
+            p.transform.position = worldPos + offset;
+            p.transform.localScale = Vector3.one * 0.1f;
+            var mat = new Material(shader);
+            mat.SetColor("_BaseColor", defuseColor);
+            mat.SetColor("_Color", defuseColor);
+            p.GetComponent<Renderer>().material = mat;
+            particles.Add(p.transform);
+        }
+
+        float duration = 0.5f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            for (int i = 0; i < particles.Count; i++)
+            {
+                if (!particles[i]) continue;
+                // Implode: move from outer position toward center
+                particles[i].position = worldPos + startOffsets[i] * (1f - t);
+                float s = Mathf.Lerp(0.1f, 0.2f, t < 0.5f ? t * 2f : (1f - t) * 2f);
+                particles[i].localScale = Vector3.one * s;
+                Color c = Color.Lerp(defuseColor, new Color(0.5f, 1f, 0.8f), t);
+                var pmat = particles[i].GetComponent<Renderer>().material;
+                pmat.SetColor("_BaseColor", c);
+                pmat.SetColor("_Color", c);
+            }
+            yield return null;
+        }
+
+        foreach (var p in particles)
+            if (p) Destroy(p.gameObject);
     }
 
     // ===================== HEARTBEAT =====================

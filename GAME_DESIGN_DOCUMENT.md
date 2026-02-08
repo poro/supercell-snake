@@ -580,21 +580,58 @@ Level Start
   → Hit wall/obstacle/self → Death → Reveal all mines and numbers
 ```
 
-### 16.10 Scoring Summary
+### 16.10 Mine Encirclement (Defuse)
+
+If the snake wraps its body around a mine so that all four orthogonal neighbors are blocked (by snake body, walls, or obstacles), the mine is **safely defused**:
+
+- **No growth penalty** — the mine is neutralized, not detonated
+- **No fog shrink or panic speed** — clean defusal
+- **Major score bonus**: +100 x level (affected by multiplier)
+- **Green implosion effect**: 10 particles spiral inward (visual opposite of explosion)
+- **Green-tinted crater** marks the defused tile (distinct from dark explosion craters)
+
+Requirements:
+- At least 2 of the 4 blocked neighbors must be snake body segments (prevents "free" defusals from obstacle/wall-only encirclement)
+- The snake must be long enough to physically wrap around the mine
+- Mines near walls or obstacles require fewer snake segments to encircle (strategic advantage)
+
+This creates a high-skill play pattern: growth from mine hits (punishment) actually makes encirclement easier (longer snake = more tiles covered). The mechanic transforms the penalty into a potential advantage for skilled players.
+
+### 16.11 Number Hint Multiplier
+
+Passing over a tile with a Minesweeper number hint activates a score multiplier:
+
+| Tile Number | Effect |
+|---|---|
+| 1 | Flat bonus: +15 x level x multiplier |
+| 2 | **2x score multiplier** for 5 seconds |
+| 3 | **3x score multiplier** for 5 seconds |
+| 4 | **4x score multiplier** for 5 seconds |
+
+The multiplier applies to all positive scoring events: food, mine avoidance, and mine encirclement. Penalties (mine hit, chain detonation) are unaffected.
+
+New multipliers replace active ones (no stacking). The HUD displays the active multiplier and countdown timer (e.g., "x3 (4.2s)").
+
+**Design intent**: Higher numbers appear near denser mine clusters. Navigating these dangerous tiles is rewarded with a powerful scoring boost, creating a risk/reward loop — do you play it safe with low scores, or weave through mine-dense territory for massive multiplied points?
+
+### 16.12 Scoring Summary
 
 | Event | Points |
 |---|---|
-| Food eaten | +10 x level |
-| Mine avoided (shrink) | +25 x level |
-| Mine hit (penalty) | -15 x level |
-| Chain detonation (penalty) | -10 x level per chain |
+| Food eaten | +10 x level x multiplier |
+| Mine avoided (shrink) | +25 x level x multiplier |
+| Mine encircled (defuse) | +100 x level x multiplier |
+| Number "1" tile bonus | +15 x level x multiplier |
+| Number 2/3/4 tile | Activates Nx multiplier (5s) |
+| Mine hit (penalty) | -15 x level (no multiplier) |
+| Chain detonation (penalty) | -10 x level per chain (no multiplier) |
 | Level complete (bonus) | +50 x level |
 
-### 16.11 Death and Reveal
+### 16.13 Death and Reveal
 
 On death, the full board is revealed: all remaining mines shown as red spheres, all number hints displayed, all obstacles and food at full brightness. This gives the player a "Minesweeper reveal moment" — seeing where every mine was and understanding what killed them.
 
-### 16.12 Design Rationale
+### 16.14 Design Rationale
 
 The growth-as-punishment / shrink-as-reward inversion is the core innovation. In classic Snake, growth is progress. In Snake Sweeper, growth is danger — a longer snake is harder to control in tight spaces. This inverts the player's relationship with the snake's length and creates a natural tension: do you risk passing near a mine to shrink, or take the safe route and stay long?
 
