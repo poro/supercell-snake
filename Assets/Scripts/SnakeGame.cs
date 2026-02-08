@@ -309,7 +309,11 @@ public class SnakeGame : MonoBehaviour
         GenerateLayout();
         SyncVisuals();
         UpdateHUD();
-        ShowMessage("SNAKE SWEEPER\n\nWASD / Arrow Keys\nRead the numbers, avoid the mines!\nPress any key to start");
+        ShowMessage(
+            "<size=52><color=#FF4488>SNAKE</color> <color=#44DDFF>SWEEPER</color></size>\n\n" +
+            "<size=22><color=#AAAAAA>WASD / Arrow Keys</color></size>\n" +
+            "<size=20><color=#FFD700>Read the numbers. Avoid the mines.</color></size>\n\n" +
+            "<size=22><color=#FFFFFF>Press any key to start</color></size>", true);
     }
 
     private void StartLevel()
@@ -338,17 +342,37 @@ public class SnakeGame : MonoBehaviour
             foodEatenThisLevel = 0;
             inTransition = true;
             transitionTimer = 5f;
-            ShowMessage($"YOU WIN!\n\nAll 10 levels cleared!\nFinal Score: {score}\n\n...entering ENDLESS mode");
+            ShowMessage(
+                "<size=52><color=#FFD700>YOU WIN!</color></size>\n\n" +
+                "<size=28><color=#00FF88>All 10 levels cleared!</color></size>\n\n" +
+                $"<size=36><color=#FF44FF>Score: {score}</color></size>\n\n" +
+                "<size=22><color=#44DDFF>...entering ENDLESS mode</color></size>", true);
             return;
         }
 
         level++;
         foodEatenThisLevel = 0;
         inTransition = true;
-        transitionTimer = 2f;
-        ShowMessage(level > 10
-            ? $"ENDLESS  Level {level}\n\nBonus: +{bonus}\nGet ready!"
-            : $"LEVEL {level}\n\nBonus: +{bonus}\nGet ready!");
+        transitionTimer = 2.5f;
+
+        if (level > 10)
+        {
+            ShowMessage(
+                $"<size=48><color=#FF00FF>ENDLESS</color></size>\n" +
+                $"<size=36><color=#44DDFF>Level {level}</color></size>\n\n" +
+                $"<size=28><color=#FFD700>+{bonus} BONUS</color></size>\n\n" +
+                "<size=22><color=#AAAAAA>Survive.</color></size>", true);
+        }
+        else
+        {
+            // Pick a neon accent color per level
+            string[] neonColors = { "#00FF88", "#FF4488", "#44DDFF", "#FFD700", "#FF6600", "#AA44FF", "#00FFFF", "#FF0066", "#88FF00" };
+            string accent = neonColors[(level - 2) % neonColors.Length];
+            ShowMessage(
+                $"<size=56><color={accent}>LEVEL {level}</color></size>\n\n" +
+                $"<size=30><color=#FFD700>+{bonus} BONUS</color></size>\n\n" +
+                "<size=24><color=#FFFFFF>Get ready!</color></size>", true);
+        }
     }
 
     private void GenerateLayout()
@@ -556,7 +580,10 @@ public class SnakeGame : MonoBehaviour
         RevealMines();
         if (audioSource && clipDeath) audioSource.PlayOneShot(clipDeath, 0.9f);
         if (heartbeatSource) heartbeatSource.volume = 0f;
-        ShowMessage($"GAME OVER\n\nLevel: {level}  Score: {score}\n\nPress SPACE to restart");
+        ShowMessage(
+            "<size=52><color=#FF2222>GAME OVER</color></size>\n\n" +
+            $"<size=28><color=#AAAAAA>Level: {level}</color>  <color=#FFD700>Score: {score}</color></size>\n\n" +
+            "<size=22><color=#FFFFFF>Press SPACE to restart</color></size>", true);
     }
 
     // ===================== FOOD =====================
@@ -1497,8 +1524,8 @@ public class SnakeGame : MonoBehaviour
         var img = messagePanel.AddComponent<Image>();
         img.color = new Color(0, 0, 0, 0.78f);
         var prt = img.rectTransform;
-        prt.anchorMin = new Vector2(0.18f, 0.22f);
-        prt.anchorMax = new Vector2(0.82f, 0.78f);
+        prt.anchorMin = new Vector2(0.12f, 0.15f);
+        prt.anchorMax = new Vector2(0.88f, 0.85f);
         prt.offsetMin = Vector2.zero;
         prt.offsetMax = Vector2.zero;
 
@@ -1583,9 +1610,18 @@ public class SnakeGame : MonoBehaviour
         }
     }
 
-    private void ShowMessage(string text)
+    private void ShowMessage(string text, bool neon = false)
     {
+        messageText.supportRichText = true;
         messageText.text = text;
+        if (neon)
+        {
+            messagePanel.GetComponent<Image>().color = new Color(0.02f, 0.01f, 0.08f, 0.92f);
+        }
+        else
+        {
+            messagePanel.GetComponent<Image>().color = new Color(0, 0, 0, 0.78f);
+        }
         messagePanel.SetActive(true);
     }
 
