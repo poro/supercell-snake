@@ -249,7 +249,7 @@ public class SnakeGame : MonoBehaviour
 
     // ===================== GAME CONFIG =====================
 
-    private int FoodForLevel(int lvl) => 4 + lvl;
+    private int FoodForLevel(int lvl) => Mathf.Min(12, 4 + lvl);
 
     private int MineCountForLevel(int lvl)
     {
@@ -267,7 +267,7 @@ public class SnakeGame : MonoBehaviour
     private int ObstacleCount(int lvl)
     {
         if (lvl <= 1) return 0;
-        return (lvl - 1) * 3;
+        return Mathf.Min(35, (lvl - 1) * 3);
     }
 
     // ===================== GAME LOGIC =====================
@@ -288,14 +288,8 @@ public class SnakeGame : MonoBehaviour
         fogOuterRadius = baseFogOuter;
         if (heartbeatSource) heartbeatSource.volume = 0f;
 
-        ClearObstacles();
-        ClearMines();
-        ClearFood();
-        ClearRevealMarkers();
         ResetSnake();
-        PlaceMines(MineCountForLevel(level));
-        PlaceObstacles(ObstacleCount(level));
-        SpawnAllFood();
+        GenerateLayout();
         SyncVisuals();
         UpdateHUD();
         ShowMessage("SNAKE SWEEPER\n\nWASD / Arrow Keys\nRead the numbers, avoid the mines!\nPress any key to start");
@@ -307,14 +301,8 @@ public class SnakeGame : MonoBehaviour
         panicTimer = 0f;
         fogInnerRadius = baseFogInner;
         fogOuterRadius = baseFogOuter;
-        ClearObstacles();
-        ClearMines();
-        ClearFood();
-        ClearRevealMarkers();
         ResetSnake();
-        PlaceMines(MineCountForLevel(level));
-        PlaceObstacles(ObstacleCount(level));
-        SpawnAllFood();
+        GenerateLayout();
         SyncVisuals();
         UpdateHUD();
         messagePanel.SetActive(false);
@@ -325,11 +313,81 @@ public class SnakeGame : MonoBehaviour
     {
         int bonus = 50 * level;
         score += bonus;
+
+        if (level == 10)
+        {
+            // Victory! Player cleared all 10 levels
+            level++;
+            foodEatenThisLevel = 0;
+            inTransition = true;
+            transitionTimer = 5f;
+            ShowMessage($"YOU WIN!\n\nAll 10 levels cleared!\nFinal Score: {score}\n\n...entering ENDLESS mode");
+            return;
+        }
+
         level++;
         foodEatenThisLevel = 0;
         inTransition = true;
         transitionTimer = 2f;
-        ShowMessage($"LEVEL {level}\n\nBonus: +{bonus}\nGet ready!");
+        ShowMessage(level > 10
+            ? $"ENDLESS  Level {level}\n\nBonus: +{bonus}\nGet ready!"
+            : $"LEVEL {level}\n\nBonus: +{bonus}\nGet ready!");
+    }
+
+    private void GenerateLayout()
+    {
+        for (int attempt = 0; attempt < 50; attempt++)
+        {
+            ClearObstacles();
+            ClearMines();
+            ClearFood();
+            ClearRevealMarkers();
+            PlaceMines(MineCountForLevel(level));
+            PlaceObstacles(ObstacleCount(level));
+            SpawnAllFood();
+            if (AllFoodReachable()) return;
+        }
+        // Last attempt used as-is (caps prevent truly impossible layouts)
+    }
+
+    private bool AllFoodReachable()
+    {
+        if (foodPositions.Count == 0) return true;
+
+        // BFS from snake start — mines don't block, only obstacles and walls
+        Vector2Int start = new Vector2Int(gridWidth / 2, gridHeight / 2);
+        bool[,] visited = new bool[gridWidth, gridHeight];
+
+        // Mark obstacles as impassable
+        foreach (var o in obstacles)
+            visited[o.x, o.y] = true;
+
+        var queue = new Queue<Vector2Int>();
+        if (!visited[start.x, start.y])
+        {
+            queue.Enqueue(start);
+            visited[start.x, start.y] = true;
+        }
+
+        while (queue.Count > 0)
+        {
+            var pos = queue.Dequeue();
+            Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+            foreach (var dir in dirs)
+            {
+                Vector2Int next = pos + dir;
+                if (next.x < 0 || next.x >= gridWidth || next.y < 0 || next.y >= gridHeight) continue;
+                if (visited[next.x, next.y]) continue;
+                visited[next.x, next.y] = true;
+                queue.Enqueue(next);
+            }
+        }
+
+        // Every food tile must be reachable
+        foreach (var fp in foodPositions)
+            if (!visited[fp.x, fp.y]) return false;
+
+        return true;
     }
 
     private void ResetSnake()
@@ -1461,7 +1519,7 @@ public class SnakeGame : MonoBehaviour
     private void UpdateHUD()
     {
         scoreText.text = $"SCORE  {score:D6}";
-        levelText.text = $"LEVEL {level}";
+        levelText.text = level > 10 ? $"ENDLESS {level}" : $"LEVEL {level}";
         progressFill.fillAmount = totalFoodThisLevel > 0 ? (float)foodEatenThisLevel / totalFoodThisLevel : 0;
         progressText.text = $"{foodEatenThisLevel}/{totalFoodThisLevel}";
     }

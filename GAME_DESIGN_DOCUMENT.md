@@ -525,24 +525,58 @@ This creates escalating dread before the player even sees a mine, reinforcing th
 ### 16.8 Multi-Food System
 
 Multiple food items spawn simultaneously at the start of each level:
-- **Food count**: 4 + current level (Level 1 = 5 food, Level 5 = 9 food)
+- **Food count**: 4 + current level, **capped at 12** (Level 1 = 5 food, Level 8+ = 12 food)
 - Food items bob and spin for visual appeal
 - Food visibility scales with fog (invisible outside fog, full size within inner radius)
-- **Win condition**: Eat all food to advance to the next level
+- **Level win condition**: Eat all food to advance to the next level
 - **Level bonus**: +50 x level on completion
 
-### 16.9 System Flow
+### 16.8.1 Obstacle Scaling
+
+Obstacles increase with level but are capped to prevent impossible layouts:
+- **Obstacle count**: (level - 1) x 3, **capped at 35** (Level 1 = 0, Level 12+ = 35)
+- On a 17x17 grid (289 tiles), the cap ensures at least ~230 open tiles remain
+
+### 16.8.2 Level Reachability Guarantee
+
+Every generated level is validated before play begins:
+- A flood-fill (BFS) runs from the snake's starting position
+- Only obstacles and walls block the flood — mines are passable (they penalize but don't block)
+- If any food tile is unreachable, the entire layout (mines, obstacles, food) is regenerated
+- Up to 50 regeneration attempts are made per level
+- This guarantees every level is completable — no food trapped in dead ends
+
+### 16.9 Victory and Endless Mode
+
+**Victory**: Clearing level 10 (eating all food on the 10th level) triggers a victory screen displaying the player's final score. The game celebrates the achievement with a 5-second display.
+
+**Endless mode**: After the victory screen, the game continues into endless mode (level 11+). The HUD displays "ENDLESS" instead of "LEVEL". Difficulty parameters (obstacles, mines, food, speed) continue scaling within their caps. There is no final end — the player keeps going until they die.
+
+```
+Level 1–10: Campaign Mode
+  → Progressive difficulty ramp
+  → Clear level 10 → VICTORY screen
+Level 11+: Endless Mode
+  → Parameters at or near caps
+  → Pure survival / high score chase
+  → No end — play until death
+```
+
+### 16.9.1 System Flow
 
 ```
 Level Start
+  → Generate layout (with reachability validation)
   → Place mines (hidden) → Place obstacles → Spawn all food
+  → Verify all food reachable via flood-fill → Regenerate if not
   → Player navigates using WASD/Arrows
   → Fog reveals tiles, numbers, mines, and food as snake moves
   → Heartbeat intensifies near mines
   → Hit mine → Growth + Fog shrink + Panic speed + Chain reactions
   → Pass by mine → Shrink + Score bonus
   → Eat food → Growth + Score
-  → All food eaten → Level bonus → Next level (more mines, more food, faster)
+  → All food eaten → Level bonus → Next level
+  → Level 10 cleared → VICTORY → Endless mode
   → Hit wall/obstacle/self → Death → Reveal all mines and numbers
 ```
 
