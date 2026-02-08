@@ -4,7 +4,7 @@
 
 Built entirely with AI — the Unity editor was only used to press Play.
 
-Created at the **Supercell AI Lab Hackathon** (February 6–8, 2025).
+Created at the **Supercell AI Lab Hackathon** (February 6–8, 2025) by **Mark Ollila** ([Endless Games and Learning Lab](https://gamelab.asu.edu), Arizona State University) as Human Overlord, with AI doing the rest.
 
 ## How It Was Built
 
