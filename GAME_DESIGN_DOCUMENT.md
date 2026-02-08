@@ -580,22 +580,36 @@ Level Start
   → Hit wall/obstacle/self → Death → Reveal all mines and numbers
 ```
 
-### 16.10 Mine Encirclement (Defuse)
+### 16.10 Mine Sweep (Circumnavigation)
 
-If the snake wraps its body around a mine so that all four orthogonal neighbors are blocked (by snake body, walls, or obstacles), the mine is **safely defused**:
+The snake can safely **defuse** a mine by circumnavigating it — visiting all 8 surrounding tiles in consecutive moves:
 
+```
+[NW] [N ] [NE]
+[W ] [💣] [E ]
+[SW] [S ] [SE]
+```
+
+**How it works:**
+- Each mine has up to 8 neighboring tiles (all directions including diagonals)
+- As the snake head moves onto a neighbor tile, it is tracked as "visited" for that mine
+- Each subsequent move must also land on a neighbor tile of the same mine — the chain continues
+- If the snake moves to a tile that is **not** a neighbor of the mine, all progress for that mine **resets to zero**
+- Once the snake has visited **all in-bounds neighbors** consecutively, the mine is safely defused
+
+**Edge and corner mines** require fewer tiles:
+- Interior mines: 8 neighbors
+- Edge mines: 5 neighbors
+- Corner mines: 3 neighbors
+
+**Defusal rewards:**
 - **No growth penalty** — the mine is neutralized, not detonated
 - **No fog shrink or panic speed** — clean defusal
-- **Major score bonus**: +100 x level (affected by multiplier)
+- **Major score bonus**: +100 x level x multiplier
 - **Green implosion effect**: 10 particles spiral inward (visual opposite of explosion)
 - **Green-tinted crater** marks the defused tile (distinct from dark explosion craters)
 
-Requirements:
-- At least 2 of the 4 blocked neighbors must be snake body segments (prevents "free" defusals from obstacle/wall-only encirclement)
-- The snake must be long enough to physically wrap around the mine
-- Mines near walls or obstacles require fewer snake segments to encircle (strategic advantage)
-
-This creates a high-skill play pattern: growth from mine hits (punishment) actually makes encirclement easier (longer snake = more tiles covered). The mechanic transforms the penalty into a potential advantage for skilled players.
+**Design intent**: This is the highest-skill move in the game. The snake must deliberately trace a path around a mine without stepping away. Orthogonal-only movement means the player must plan a square-shaped route around the mine. Growth from mine hits (punishment) actually makes circumnavigation easier (longer snake = more flexibility), transforming the penalty into a potential advantage for skilled players.
 
 ### 16.11 Number Hint Multiplier
 
@@ -638,6 +652,50 @@ The growth-as-punishment / shrink-as-reward inversion is the core innovation. In
 The fog shrink + panic speed combo after a mine hit creates a genuine horror-survival moment: you made a mistake, and now you can see less, move faster, and are bigger. The heartbeat audio builds dread before visual contact, making the information-gathering phase feel tense rather than passive.
 
 Chain reactions add unpredictability — one mine can cascade into a disaster, making every mine hit feel like it could end the run.
+
+### 16.15 Visual Effects
+
+**Mine Explosion** — 3-phase cinematic effect triggered on mine hit:
+1. **Fireball Flash** (0.25s): Bright white-orange sphere rapidly expands from 0.3 to 2.5 units, fading through orange to deep red
+2. **Shrapnel Burst** (0.8s): 24 cubes of varying sizes fly outward with gravity arcs, spinning at 720°/s, fading from bright orange to dark red
+3. **Lingering Embers** (0.7s): 10 small glowing spheres drift upward and fade out
+
+**Screen Flash**: Full-screen UI overlay flashes bright orange-white on mine hit, fading through red to transparent (0.4s)
+
+**Camera Shake**: Position offset from base with intensity proportional to remaining timer (3x multiplier, 0.35 amplitude), duration 0.6s
+
+**Freeze Frame**: Game logic pauses for 0.5s on mine hit for dramatic impact
+
+**Defuse Implosion**: 10 green particles spiral inward (visual inverse of explosion), 0.5s
+
+**Shrink Sparkle**: 6 green spheres float upward in a ring pattern when the snake shrinks from mine avoidance
+
+### 16.16 HUD and UI
+
+- **Score**: Large text, top center (38px with outline)
+- **Level**: Top left, shows "LEVEL N" or "ENDLESS N" after level 10
+- **Food Icons**: Top right — gold circle icons, one per food item. Empty circles (○) for uneaten, filled circles (●) for eaten. Visually tracks progress toward level clear
+- **Multiplier**: Below score, shows "x3 (4.2s)" when a score multiplier is active (gold text with countdown)
+- **Overlays**: All level events (clear, victory, game over, title) use near-fullscreen panels with 80-96px bold neon-styled rich text headers
+
+### 16.17 Screens
+
+**Splash Screen** (shown on game start):
+- Full-screen dark panel with neon "SNAKE SWEEPER" title (120px bold, pink + cyan)
+- "Snake meets Minesweeper" tagline with gameplay hint
+- 7 decorative 3D mine objects that rotate and bob in the background
+- Pulsing "PRESS ANY KEY" prompt with "H — How to Play" and "C — Credits" options
+- Footer: Supercell AI Lab Hackathon | February 6–8, 2026 | MIT License
+
+**How to Play** (press H from splash, 3 pages with arrow key navigation):
+- Page 1: Controls, Fog of War, Food, Obstacles
+- Page 2: Number Hints, Mine Hit, Mine Avoidance, Proximity Heartbeat
+- Page 3: Mine Sweep circumnavigation, Score Multiplier, Scoring Table
+
+**Credits Screen** (press C from splash):
+- Human Overlord: Mark Ollila (linkedin.com/in/markollila), Endless Games and Learning Lab, ASU
+- Built With: Claude Code, Claude Desktop, ElevenLabs, Unity 6
+- Source Code: github.com/poro/supercell-snake
 
 ---
 
