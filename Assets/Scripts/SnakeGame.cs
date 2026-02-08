@@ -62,6 +62,8 @@ public class SnakeGame : MonoBehaviour
     private readonly HashSet<int> shrinkCooldown = new HashSet<int>();
     private readonly List<Transform> mineRevealMarkers = new List<Transform>();
     private readonly List<Transform> mineVisuals = new List<Transform>();
+    // Circumnavigation tracking: for each mine index, which neighbor directions the head has visited
+    private readonly Dictionary<int, HashSet<Vector2Int>> mineCircumProgress = new Dictionary<int, HashSet<Vector2Int>>();
 
     // Effects
     private float freezeTimer;
@@ -582,7 +584,9 @@ public class SnakeGame : MonoBehaviour
         }
         if (shrinks > 0) UpdateHUD();
 
-        // === MINE ENCIRCLEMENT ===
+        // === MINE CIRCUMNAVIGATION ===
+        // Track which sides of each mine the head has visited
+        UpdateCircumProgress(head);
         CheckMineEncirclement();
 
         SyncVisuals();
@@ -824,6 +828,7 @@ public class SnakeGame : MonoBehaviour
         mineVisuals.Clear();
         minePositions.Clear();
         shrinkCooldown.Clear();
+        mineCircumProgress.Clear();
 
         if (mineGrid != null)
         {
@@ -1678,35 +1683,35 @@ public class SnakeGame : MonoBehaviour
         titleGo.transform.SetParent(splashPanel.transform, false);
         var titleText = titleGo.AddComponent<Text>();
         titleText.font = GetFont();
-        titleText.fontSize = 20;
+        titleText.fontSize = 120;
         titleText.supportRichText = true;
         titleText.alignment = TextAnchor.MiddleCenter;
         titleText.text =
-            "<size=72><color=#FF4488>SNAKE</color></size>\n" +
-            "<size=72><color=#44DDFF>SWEEPER</color></size>";
+            "<color=#FF4488><b>SNAKE</b></color>\n" +
+            "<color=#44DDFF><b>SWEEPER</b></color>";
         var trt = titleText.rectTransform;
         trt.anchorMin = new Vector2(0, 0.45f);
-        trt.anchorMax = new Vector2(1, 0.85f);
+        trt.anchorMax = new Vector2(1, 0.88f);
         trt.offsetMin = Vector2.zero;
         trt.offsetMax = Vector2.zero;
         var tol = titleGo.AddComponent<Outline>();
         tol.effectColor = new Color(0.3f, 0f, 0.2f);
-        tol.effectDistance = new Vector2(3, 3);
+        tol.effectDistance = new Vector2(4, 4);
 
         // Tagline
         var tagGo = new GameObject("SplashTag");
         tagGo.transform.SetParent(splashPanel.transform, false);
         var tagText = tagGo.AddComponent<Text>();
         tagText.font = GetFont();
-        tagText.fontSize = 18;
+        tagText.fontSize = 32;
         tagText.supportRichText = true;
         tagText.alignment = TextAnchor.MiddleCenter;
         tagText.text =
-            "<color=#FFD700>Snake meets Minesweeper</color>\n" +
-            "<color=#888888>Read the numbers. Avoid the mines. Defuse them.</color>";
+            "<color=#FFD700><b>Snake meets Minesweeper</b></color>\n" +
+            "<size=26><color=#AAAAAA>Read the numbers. Avoid the mines. Defuse them.</color></size>";
         var tagrt = tagText.rectTransform;
-        tagrt.anchorMin = new Vector2(0.1f, 0.35f);
-        tagrt.anchorMax = new Vector2(0.9f, 0.48f);
+        tagrt.anchorMin = new Vector2(0.05f, 0.32f);
+        tagrt.anchorMax = new Vector2(0.95f, 0.48f);
         tagrt.offsetMin = Vector2.zero;
         tagrt.offsetMax = Vector2.zero;
 
@@ -1715,19 +1720,19 @@ public class SnakeGame : MonoBehaviour
         pressGo.transform.SetParent(splashPanel.transform, false);
         splashPressText = pressGo.AddComponent<Text>();
         splashPressText.font = GetFont();
-        splashPressText.fontSize = 24;
+        splashPressText.fontSize = 40;
         splashPressText.alignment = TextAnchor.MiddleCenter;
         splashPressText.color = Color.white;
         splashPressText.supportRichText = true;
-        splashPressText.text = "PRESS ANY KEY\n<size=16><color=#888888>C \u2014 Credits</color></size>";
+        splashPressText.text = "<b>PRESS ANY KEY</b>\n<size=26><color=#888888>C \u2014 Credits</color></size>";
         var prt = splashPressText.rectTransform;
-        prt.anchorMin = new Vector2(0, 0.18f);
+        prt.anchorMin = new Vector2(0, 0.16f);
         prt.anchorMax = new Vector2(1, 0.32f);
         prt.offsetMin = Vector2.zero;
         prt.offsetMax = Vector2.zero;
         var pol = pressGo.AddComponent<Outline>();
         pol.effectColor = Color.black;
-        pol.effectDistance = new Vector2(1, 1);
+        pol.effectDistance = new Vector2(2, 2);
 
         // Decorative mine icons (3D objects behind UI)
         CreateSplashMines();
@@ -1737,14 +1742,14 @@ public class SnakeGame : MonoBehaviour
         footerGo.transform.SetParent(splashPanel.transform, false);
         var footerText = footerGo.AddComponent<Text>();
         footerText.font = GetFont();
-        footerText.fontSize = 13;
+        footerText.fontSize = 22;
         footerText.supportRichText = true;
         footerText.alignment = TextAnchor.LowerCenter;
         footerText.text =
-            "<color=#666666>Supercell AI Lab Hackathon  |  February 6\u20138, 2026  |  MIT License</color>";
+            "<color=#777777><b>Supercell AI Lab Hackathon</b>  |  February 6\u20138, 2026  |  MIT License</color>";
         var frt = footerText.rectTransform;
         frt.anchorMin = Vector2.zero;
-        frt.anchorMax = new Vector2(1, 0.08f);
+        frt.anchorMax = new Vector2(1, 0.10f);
         frt.offsetMin = new Vector2(0, 8);
         frt.offsetMax = Vector2.zero;
 
@@ -1753,11 +1758,11 @@ public class SnakeGame : MonoBehaviour
         credGo.transform.SetParent(splashPanel.transform, false);
         var credText = credGo.AddComponent<Text>();
         credText.font = GetFont();
-        credText.fontSize = 12;
+        credText.fontSize = 20;
         credText.supportRichText = true;
         credText.alignment = TextAnchor.LowerCenter;
         credText.text =
-            "<color=#555555>Mark Ollila  |  Claude Code  |  Claude Desktop  |  ElevenLabs  |  Unity</color>";
+            "<color=#666666>Mark Ollila  |  Claude Code  |  Claude Desktop  |  ElevenLabs  |  Unity</color>";
         var crt = credText.rectTransform;
         crt.anchorMin = Vector2.zero;
         crt.anchorMax = new Vector2(1, 0.05f);
@@ -1870,35 +1875,35 @@ public class SnakeGame : MonoBehaviour
         titleGo.transform.SetParent(creditsPanel.transform, false);
         var titleText = titleGo.AddComponent<Text>();
         titleText.font = GetFont();
-        titleText.fontSize = 20;
+        titleText.fontSize = 72;
         titleText.supportRichText = true;
         titleText.alignment = TextAnchor.MiddleCenter;
-        titleText.text = "<size=48><color=#44DDFF>CREDITS</color></size>";
+        titleText.text = "<color=#44DDFF><b>CREDITS</b></color>";
         var trt = titleText.rectTransform;
-        trt.anchorMin = new Vector2(0, 0.82f);
-        trt.anchorMax = new Vector2(1, 0.95f);
+        trt.anchorMin = new Vector2(0, 0.84f);
+        trt.anchorMax = new Vector2(1, 0.98f);
         trt.offsetMin = Vector2.zero;
         trt.offsetMax = Vector2.zero;
         var tol = titleGo.AddComponent<Outline>();
         tol.effectColor = new Color(0f, 0.1f, 0.2f);
-        tol.effectDistance = new Vector2(2, 2);
+        tol.effectDistance = new Vector2(3, 3);
 
         // Human Overlord
         var humanGo = new GameObject("CreditsHuman");
         humanGo.transform.SetParent(creditsPanel.transform, false);
         var humanText = humanGo.AddComponent<Text>();
         humanText.font = GetFont();
-        humanText.fontSize = 20;
+        humanText.fontSize = 30;
         humanText.supportRichText = true;
         humanText.alignment = TextAnchor.MiddleCenter;
         humanText.text =
-            "<color=#FF4488>Human Overlord</color>\n\n" +
-            "<size=28><color=#FFFFFF>Mark Ollila</color></size>\n" +
-            "<size=16><color=#888888>Endless Games and Learning Lab, Arizona State University</color></size>\n" +
-            "<size=14><color=#44AAFF>linkedin.com/in/markollila</color></size>";
+            "<color=#FF4488><b>Human Overlord</b></color>\n\n" +
+            "<size=44><color=#FFFFFF><b>Mark Ollila</b></color></size>\n" +
+            "<size=26><color=#AAAAAA>Endless Games and Learning Lab, Arizona State University</color></size>\n" +
+            "<size=24><color=#44AAFF>linkedin.com/in/markollila</color></size>";
         var hrt = humanText.rectTransform;
-        hrt.anchorMin = new Vector2(0.1f, 0.58f);
-        hrt.anchorMax = new Vector2(0.9f, 0.82f);
+        hrt.anchorMin = new Vector2(0.05f, 0.56f);
+        hrt.anchorMax = new Vector2(0.95f, 0.84f);
         hrt.offsetMin = Vector2.zero;
         hrt.offsetMax = Vector2.zero;
 
@@ -1907,18 +1912,18 @@ public class SnakeGame : MonoBehaviour
         toolsGo.transform.SetParent(creditsPanel.transform, false);
         var toolsText = toolsGo.AddComponent<Text>();
         toolsText.font = GetFont();
-        toolsText.fontSize = 20;
+        toolsText.fontSize = 30;
         toolsText.supportRichText = true;
         toolsText.alignment = TextAnchor.MiddleCenter;
         toolsText.text =
-            "<color=#FF4488>Built With</color>\n\n" +
-            "<size=20><color=#FFFFFF>Claude Code</color>  <color=#666666>\u2014  All code authoring and file system operations</color></size>\n" +
-            "<size=20><color=#FFFFFF>Claude Desktop</color>  <color=#666666>\u2014  Game design document creation</color></size>\n" +
-            "<size=20><color=#FFFFFF>ElevenLabs</color>  <color=#666666>\u2014  Sound effects and music</color></size>\n" +
-            "<size=20><color=#FFFFFF>Unity 6</color>  <color=#666666>\u2014  Game engine</color></size>";
+            "<color=#FF4488><b>Built With</b></color>\n\n" +
+            "<size=28><color=#FFFFFF><b>Claude Code</b></color>  <color=#888888>\u2014  All code authoring</color></size>\n" +
+            "<size=28><color=#FFFFFF><b>Claude Desktop</b></color>  <color=#888888>\u2014  Game design document</color></size>\n" +
+            "<size=28><color=#FFFFFF><b>ElevenLabs</b></color>  <color=#888888>\u2014  Sound effects and music</color></size>\n" +
+            "<size=28><color=#FFFFFF><b>Unity 6</b></color>  <color=#888888>\u2014  Game engine</color></size>";
         var tlrt = toolsText.rectTransform;
-        tlrt.anchorMin = new Vector2(0.05f, 0.28f);
-        tlrt.anchorMax = new Vector2(0.95f, 0.58f);
+        tlrt.anchorMin = new Vector2(0.05f, 0.24f);
+        tlrt.anchorMax = new Vector2(0.95f, 0.56f);
         tlrt.offsetMin = Vector2.zero;
         tlrt.offsetMax = Vector2.zero;
 
@@ -1927,15 +1932,15 @@ public class SnakeGame : MonoBehaviour
         ghGo.transform.SetParent(creditsPanel.transform, false);
         var ghText = ghGo.AddComponent<Text>();
         ghText.font = GetFont();
-        ghText.fontSize = 18;
+        ghText.fontSize = 28;
         ghText.supportRichText = true;
         ghText.alignment = TextAnchor.MiddleCenter;
         ghText.text =
-            "<color=#FFD700>Source Code</color>\n" +
-            "<size=18><color=#44AAFF>github.com/poro/supercell-snake</color></size>";
+            "<color=#FFD700><b>Source Code</b></color>\n" +
+            "<size=28><color=#44AAFF>github.com/poro/supercell-snake</color></size>";
         var ghrt = ghText.rectTransform;
-        ghrt.anchorMin = new Vector2(0.1f, 0.16f);
-        ghrt.anchorMax = new Vector2(0.9f, 0.28f);
+        ghrt.anchorMin = new Vector2(0.05f, 0.12f);
+        ghrt.anchorMax = new Vector2(0.95f, 0.26f);
         ghrt.offsetMin = Vector2.zero;
         ghrt.offsetMax = Vector2.zero;
 
@@ -1944,15 +1949,15 @@ public class SnakeGame : MonoBehaviour
         footGo.transform.SetParent(creditsPanel.transform, false);
         var footText = footGo.AddComponent<Text>();
         footText.font = GetFont();
-        footText.fontSize = 14;
+        footText.fontSize = 22;
         footText.supportRichText = true;
         footText.alignment = TextAnchor.MiddleCenter;
         footText.text =
-            "<color=#666666>Supercell AI Lab Hackathon  |  February 6\u20138, 2026  |  MIT License</color>\n" +
-            "<size=16><color=#888888>PRESS ANY KEY TO RETURN</color></size>";
+            "<color=#777777><b>Supercell AI Lab Hackathon</b>  |  February 6\u20138, 2026  |  MIT License</color>\n" +
+            "<size=24><color=#AAAAAA>PRESS ANY KEY TO RETURN</color></size>";
         var frt = footText.rectTransform;
-        frt.anchorMin = new Vector2(0, 0.02f);
-        frt.anchorMax = new Vector2(1, 0.14f);
+        frt.anchorMin = new Vector2(0, 0.01f);
+        frt.anchorMax = new Vector2(1, 0.12f);
         frt.offsetMin = Vector2.zero;
         frt.offsetMax = Vector2.zero;
 
@@ -2120,48 +2125,67 @@ public class SnakeGame : MonoBehaviour
         return root;
     }
 
-    // ===================== MINE ENCIRCLEMENT =====================
+    // ===================== MINE CIRCUMNAVIGATION =====================
 
-    private void CheckMineEncirclement()
+    private void UpdateCircumProgress(Vector2Int head)
     {
-        var snakeSet = new HashSet<Vector2Int>(snake);
-        var toDefuse = new List<Vector2Int>();
-
+        // For each active mine, check if the head is on one of its 4 neighbor tiles
+        Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
         for (int i = 0; i < minePositions.Count; i++)
         {
             Vector2Int mp = minePositions[i];
             if (!mineGrid[mp.x, mp.y]) continue;
 
-            // All 4 neighbors must be blocked (wall, snake, or obstacle)
-            // At least 2 must be snake body (player actively encircled it)
-            bool allBlocked = true;
-            int snakeNeighbors = 0;
+            foreach (var dir in dirs)
+            {
+                if (head == mp + dir)
+                {
+                    if (!mineCircumProgress.ContainsKey(i))
+                        mineCircumProgress[i] = new HashSet<Vector2Int>();
+                    mineCircumProgress[i].Add(dir);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void CheckMineEncirclement()
+    {
+        var toDefuse = new List<int>();
+
+        // Count how many orthogonal neighbors exist (tiles not off-grid)
+        foreach (var kvp in mineCircumProgress)
+        {
+            int mIdx = kvp.Key;
+            if (mIdx < 0 || mIdx >= minePositions.Count) continue;
+            Vector2Int mp = minePositions[mIdx];
+            if (!mineGrid[mp.x, mp.y]) continue;
+
+            // How many in-bounds neighbors does this mine have?
+            int totalNeighbors = 0;
             Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
             foreach (var dir in dirs)
             {
                 Vector2Int n = mp + dir;
-                if (n.x < 0 || n.x >= gridWidth || n.y < 0 || n.y >= gridHeight)
-                    continue; // wall = blocked
-                if (snakeSet.Contains(n))
-                    snakeNeighbors++;
-                else if (obstacles.Contains(n))
-                    { } // obstacle = blocked
-                else
-                    { allBlocked = false; break; }
+                if (n.x >= 0 && n.x < gridWidth && n.y >= 0 && n.y < gridHeight)
+                    totalNeighbors++;
             }
 
-            if (allBlocked && snakeNeighbors >= 2)
-                toDefuse.Add(mp);
+            // Snake head must have visited ALL in-bounds neighbor tiles
+            if (kvp.Value.Count >= totalNeighbors)
+                toDefuse.Add(mIdx);
         }
 
-        foreach (var mp in toDefuse)
+        foreach (int mIdx in toDefuse)
         {
-            // Safe detonation — no growth, no fog shrink, no panic
+            Vector2Int mp = minePositions[mIdx];
+
+            // Safe defusal — no growth, no fog shrink, no panic
             mineGrid[mp.x, mp.y] = false;
+            mineCircumProgress.Remove(mIdx);
 
             // Destroy mine visual
-            int mIdx = minePositions.IndexOf(mp);
-            if (mIdx >= 0 && mIdx < mineVisuals.Count && mineVisuals[mIdx])
+            if (mIdx < mineVisuals.Count && mineVisuals[mIdx])
             {
                 Destroy(mineVisuals[mIdx].gameObject);
                 mineVisuals[mIdx] = null;
