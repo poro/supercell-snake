@@ -103,8 +103,9 @@ GAME_DESIGN_DOCUMENT.md   # Full GDD including Snake Sweeper design (Section 16)
 ## Running the Game
 
 1. Open the project in **Unity 6000.3.7f1** (or compatible Unity 6 version)
-2. Open `Assets/Scenes/SampleScene.unity`
-3. Press **Play**
+2. In Unity, go to File > Open Scene (or use the Project panel)
+3. Navigate to Assets/Scenes/SampleScene.unity and open it
+4. Then hit the Play button
 
 ## Tools Used
 
