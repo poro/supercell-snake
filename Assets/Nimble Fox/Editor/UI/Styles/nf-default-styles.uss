@@ -1,0 +1,128 @@
+Label {
+    color: #DCDCDC;
+}
+
+TextField {
+    color: #DCDCDC;
+    border-top-color: #3C3C3C;
+    border-right-color: #3C3C3C;
+    border-bottom-color: #3C3C3C;
+    border-left-color: #3C3C3C;
+}
+
+TextInput {
+    color: #DCDCDC;
+    background-color: #2A2A2A;
+    border-top-color: #3C3C3C;
+    border-right-color: #3C3C3C;
+    border-bottom-color: #3C3C3C;
+    border-left-color: #3C3C3C;
+}
+
+Button {
+    color: #DCDCDC;                 /* Button text */
+    background-color: #3A3A3A;      /* Default dark button */
+    border-top-color: #4A4A4A;
+    border-right-color: #4A4A4A;
+    border-bottom-color: #2A2A2A;
+    border-left-color: #2A2A2A;
+}
+
+/* Hover */
+Button:hover {
+    background-color: #454545;
+}
+
+/* Pressed */
+Button:active {
+    background-color: #2F2F2F;
+}
+
+Toolbar {
+    background-color: #2B2B2B;      /* Dark theme toolbar background */
+    border-bottom-color: #1E1E1E;
+    border-top-color: #3A3A3A;
+    border-left-color: #2B2B2B;
+    border-right-color: #2B2B2B;
+}
+
+ToolbarButton {
+    color: #DCDCDC;                /* Dark theme text */
+    background-color: #2E2E2E;     /* Dark toolbar background */
+    border-left-color: #3A3A3A;
+    border-right-color: #1F1F1F;
+    border-top-color: #3A3A3A;
+    border-bottom-color: #1F1F1F;
+}
+
+ToolbarButton:hover {
+    background-color: #3A3A3A;
+}
+
+ToolbarButton:active {
+    background-color: #242424;
+}
+
+ToolbarMenu {
+    color: #DCDCDC;
+    background-color: #2E2E2E;
+    border-left-color: #3A3A3A;
+    border-right-color: #1F1F1F;
+    border-top-color: #3A3A3A;
+    border-bottom-color: #1F1F1F;
+}
+
+ToolbarMenu .unity-text-element {
+    color: #DCDCDC;
+}
+
+ToolbarMenu:hover {
+    background-color: #3A3A3A;
+}
+
+ToolbarMenu:active {
+    background-color: #242424;
+}
+
+ToolbarSearchField {
+    background-color: #2E2E2E;
+    border-top-color: #3A3A3A;
+    border-right-color: #1F1F1F;
+    border-bottom-color: #1F1F1F;
+    border-left-color: #3A3A3A;
+}
+
+
+ToolbarSearchField .unity-text-input {
+    color: #DCDCDC;                /* Text color */
+    background-color: #2E2E2E;     /* Input background */
+}
+
+ToolbarSearchField:hover {
+    background-color: #3A3A3A;
+}
+
+/* FloatField */
+.unity-floating-point-field {
+    background-color: #1e1e1e;
+    border-color: #3c3c3c;
+    border-width: 1px;
+    border-radius: 3px;
+    color: #ffffff;
+}
+
+/* Text element inside FloatField */
+.unity-floating-point-field > .unity-text-input {
+    color: #ffffff;
+}
+
+/* Text inside nested float fields */
+.unity-vector3-field .unity-floating-point-field > .unity-text-input {
+    color: #ffffff;
+}
+
+
+/* Vector3 label */
+.unity-vector3-field > .unity-label {
+    color: #ffffff;
+}

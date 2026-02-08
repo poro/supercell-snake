@@ -1,0 +1,62 @@
+VisualElement {
+}
+
+.body {
+    background-color: rgb(60, 60, 60);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-left-color: rgb(87, 87, 87);
+    border-right-color: rgb(87, 87, 87);
+    border-top-color: rgb(87, 87, 87);
+    border-bottom-color: rgb(87, 87, 87);
+    margin-left: 8px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+    margin-right: 8px;
+}
+
+.node-name {
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    font-size: 28px;
+    -unity-text-align: upper-center;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.node-description {
+    color: rgb(255, 255, 255);
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-left-color: rgb(87, 87, 87);
+    border-right-color: rgb(87, 87, 87);
+    border-top-color: rgb(87, 87, 87);
+    border-bottom-color: rgb(87, 87, 87);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    background-color: rgb(43, 43, 43);
+}
+
+.node_inspector_button {
+    background-color: rgb(170, 95, 45);
+}
+
+.node_inspector_button:hover {
+    background-color: rgb(255, 160, 40);
+}

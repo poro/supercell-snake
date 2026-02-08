@@ -1,0 +1,90 @@
+.nf-error-link-button {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    background-color: rgb(60, 60, 60);
+    border-left-color: rgb(87, 87, 87);
+    border-right-color: rgb(87, 87, 87);
+    border-top-color: rgb(87, 87, 87);
+    border-bottom-color: rgb(87, 87, 87);
+}
+.nf-error-link-button:hover {
+    background-color: rgb(87, 87, 87);
+    border-left-color: rgb(87, 87, 87);
+    border-right-color: rgb(87, 87, 87);
+    border-top-color: rgb(87, 87, 87);
+    border-bottom-color: rgb(87, 87, 87);
+}
+
+.nf-error-link-button:active {
+    background-color: rgb(87, 87, 87);
+    border-left-color: rgb(87, 87, 87);
+    border-right-color: rgb(87, 87, 87);
+    border-top-color: rgb(87, 87, 87);
+    border-bottom-color: rgb(87, 87, 87);
+}
+
+.nf-error-link-button-2 {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    background-color: rgb(170, 95, 45);
+    border-left-color: rgb(255, 109, 0);
+    border-right-color: rgb(170, 95, 45);
+    border-top-color: rgb(255, 179, 61);
+    border-bottom-color: rgb(170, 95, 45);
+}
+
+.nf-error-link-button-2:hover {
+    background-color: rgb(255, 109, 0);
+    border-left-color: rgb(255, 109, 0);
+    border-right-color: rgb(170, 95, 45);
+    border-top-color: rgb(255, 179, 61);
+    border-bottom-color: rgb(170, 95, 45);
+}
+
+.nf-error-link-button-2:active {
+    background-color: rgb(255, 179, 61);
+    border-left-color: rgb(255, 109, 0);
+    border-right-color: rgb(170, 95, 45);
+    border-top-color: rgb(255, 179, 61);
+    border-bottom-color: rgb(170, 95, 45);
+}
+
+.response-error-style-bar {
+    border-left-color: #C5211B;
+    border-right-color: #C5211B;
+    border-top-color: #C5211B;
+    border-bottom-color: #C5211B;
+}
+
+.response-notice-style-bar {
+    border-left-color: #EAAB2F;
+    border-right-color: #EAAB2F;
+    border-top-color: #EAAB2F;
+    border-bottom-color: #EAAB2F;
+}
+
+.response-tokens-style-bar {
+    border-left-color: rgb(255, 109, 0);
+    border-right-color: rgb(255, 109, 0);
+    border-top-color: rgb(255, 109, 0);
+    border-bottom-color: rgb(255, 109, 0);
+}
+
+.response-update-style-bar {
+    border-left-color: #53B0F1;
+    border-right-color: #53B0F1;
+    border-top-color: #53B0F1;
+    border-bottom-color: #53B0F1;
+}

@@ -1,0 +1,37 @@
+.ping-ticket-highlight {
+    transition: border-color 0.5s ease-out;
+    border-color: #FFBE3D;
+}
+
+.ping-ticket-default {
+    transition: border-color 1.2s ease-in-out;
+    border-color: #575757;
+}
+
+.transparent-hover-override:hover {
+    background-color: rgb(35, 35, 35);
+    background-color: rgba(42, 42, 42, 0);
+}
+
+.ping-item-highlight {
+    transition: background-color 0.5s ease-out, border-color 0.5s ease-out;
+    border-color: #FFBE3D;
+}
+
+.ping-item-default {
+    transition: background-color 1.2s ease-in-out, border-color 1.2s ease-in-out;
+    border-color: #575757;
+}
+
+.ping-fade-item-default {
+    opacity: 0; /* hidden by default */
+    transition: opacity 0.4s ease-in-out;
+}
+
+.ping-fade-item-highlight {
+    opacity: 1; /* visible */
+    transition: opacity 0.4s ease-in-out;
+}
+
+.link {
+}

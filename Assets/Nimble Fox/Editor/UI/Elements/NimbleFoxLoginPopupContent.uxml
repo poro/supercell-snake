@@ -1,0 +1,60 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-login-popup.uss?fileID=7433441132597879392&amp;guid=c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6&amp;type=3#nf-login-popup" />
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-reactive-button.uss?fileID=7433441132597879392&amp;guid=569790a38ecf9f54aa691d7383246fa3&amp;type=3#nf-reactive-button" />
+    <engine:VisualElement name="LoginPopupContent" style="flex-grow: 0; position: relative; width: 300px; height: 450px; justify-content: center; padding-left: 8px; padding-right: 8px; display: flex; background-color: rgb(43, 43, 43);">
+        <engine:VisualElement name="LoggedOutView" style="flex-grow: 1; align-items: stretch; justify-content: center; display: none;">
+            <engine:VisualElement style="flex-grow: 0; padding-left: 8px; padding-right: 8px; padding-top: 0; padding-bottom: 0; margin-right: 0; margin-left: 0; margin-top: 0; margin-bottom: 0; justify-content: space-between; align-items: stretch; flex-shrink: 1;">
+                <engine:VisualElement name="Title" style="flex-grow: 1; flex-direction: row; align-items: flex-start; margin-top: 0; margin-bottom: 20px; justify-content: center; height: 50px;">
+                    <engine:VisualElement style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-logo-large.png?fileID=2800000&amp;guid=582d2c63a43f7fd44a1b3369803c9997&amp;type=3#nf-logo-large&quot;); width: 33px; height: 33px; margin-right: 4px; -unity-background-scale-mode: scale-to-fit;" />
+                    <engine:Label text="Nimble Fox" style="font-size: 24px; -unity-text-align: middle-left; -unity-font-style: bold; margin-left: 0; padding-left: 2px; color: rgb(207, 207, 207);" />
+                </engine:VisualElement>
+                <engine:VisualElement style="flex-grow: 0; flex-direction: row; flex-shrink: 0; justify-content: center;">
+                    <engine:Button name="SignInButton" class="nf-scaling-button-small" style="margin-left: 0; margin-right: 0; padding-right: 0; margin-bottom: 0; margin-top: 0; padding-top: 10px; padding-bottom: 10px; padding-left: 0; background-color: rgb(60, 60, 60); color: rgb(255, 255, 255); -unity-font-style: bold; justify-content: center; align-items: center; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; border-left-color: rgb(87, 87, 87); border-right-color: rgb(87, 87, 87); border-top-color: rgb(132, 132, 132); border-bottom-color: rgb(87, 87, 87); border-top-width: 1px; height: 37.5px; flex-direction: row; flex-grow: 1;">
+                        <engine:Label text="Log In" style="font-size: 12px; color: rgb(196, 196, 196);" />
+                        <engine:VisualElement style="flex-grow: 0; width: 20px; height: 20px; margin-left: 4px; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-external-link.png?fileID=2800000&amp;guid=be961a780d62f104a9e0ab20ff022c53&amp;type=3#nf-external-link&quot;); margin-top: 0;" />
+                    </engine:Button>
+                </engine:VisualElement>
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <engine:VisualElement name="LoggedInView" style="flex-grow: 1; display: flex; padding-left: 8px; padding-right: 8px; margin-top: 32px;">
+            <engine:Label text="Firstname Lastname" name="UserNameText" style="padding-bottom: 1px; margin-bottom: 1px; -unity-font-style: bold; color: rgb(196, 196, 196);" />
+            <engine:Label text="firstname.lastname@gmail.com" name="SignedInEmail" style="margin-top: 1px; padding-top: 1px; padding-left: 0; -unity-font-style: normal; color: rgb(196, 196, 196);" />
+            <engine:VisualElement name="Buttons" style="flex-grow: 0; flex-direction: row; justify-content: space-between; margin-top: 12px;">
+                <engine:Button name="ManageProfileButton" class="nf-scaling-button-small" style="flex-direction: row; align-items: center; justify-content: center; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; border-left-color: rgb(87, 87, 87); border-right-color: rgb(87, 87, 87); border-top-color: rgb(87, 87, 87); border-bottom-color: rgb(87, 87, 87); background-color: rgb(60, 60, 60); margin-left: 0; padding-top: 8px; padding-bottom: 8px; padding-left: 12px; padding-right: 12px; margin-top: 0; margin-bottom: 0;">
+                    <engine:Label text="Manage profile" style="color: rgb(196, 196, 196);" />
+                    <engine:VisualElement style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-external-link.png?fileID=2800000&amp;guid=be961a780d62f104a9e0ab20ff022c53&amp;type=3#nf-external-link&quot;); width: 20px; height: 20px; margin-left: 4px;" />
+                </engine:Button>
+                <engine:Button text="Log Out" name="SignOutButton" class="nf-scaling-button-small logout-button" style="display: flex; margin-left: 0; margin-right: 0; padding-right: 24px; margin-bottom: 0; margin-top: 0; padding-top: 6px; padding-bottom: 6px; padding-left: 24px; color: rgb(196, 196, 196); -unity-font-style: normal; background-color: rgba(88, 88, 88, 0); width: 120px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;" />
+            </engine:VisualElement>
+            <engine:VisualElement name="LoadingGroup" style="flex-grow: 0; flex-direction: row; align-items: center; margin-top: 16px;">
+                <engine:Label text="Loading..." style="color: rgb(132, 132, 132); font-size: 12px; margin-left: 8px;" />
+            </engine:VisualElement>
+            <engine:VisualElement name="PlanInfo" style="flex-grow: 0; margin-top: 32px;">
+                <engine:Label text="Your Current Plan" style="-unity-font-style: bold; color: rgb(196, 196, 196);" />
+                <engine:VisualElement style="flex-grow: 0; border-left-color: rgb(87, 87, 87); border-right-color: rgb(87, 87, 87); border-top-color: rgb(87, 87, 87); border-bottom-color: rgb(87, 87, 87); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; padding-top: 10px; padding-bottom: 10px; padding-left: 8px; padding-right: 8px; flex-direction: row; justify-content: space-between; margin-top: 8px;">
+                    <engine:Label text="Basic" name="PlanTierName" style="-unity-text-align: upper-left; color: rgb(196, 196, 196);" />
+                    <engine:Label text="350/400 tokens" name="TokenDisplay" style="-unity-text-align: upper-right; color: rgb(196, 196, 196);" />
+                </engine:VisualElement>
+                <engine:Label text="Monthly tokens will reset on Feb 11, 2:47PM" name="TokenResetLabel" style="font-size: 10px; margin-top: 8px; color: rgb(87, 87, 87);" />
+            </engine:VisualElement>
+            <engine:Button name="GetMoreTokensButton" class="nf-scaling-button-small" style="flex-direction: row; justify-content: center; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(170, 95, 45); padding-top: 6px; padding-bottom: 6px; border-left-color: rgb(255, 160, 40); border-right-color: rgb(255, 160, 40); border-top-color: rgb(255, 190, 61); border-bottom-color: rgb(255, 160, 40); border-top-width: 2px; align-content: center; margin-top: 16px;">
+                <engine:Label text="Get more tokens" style="color: rgb(210, 210, 210);" />
+                <engine:VisualElement style="flex-grow: 0; width: 20px; height: 20px; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-external-link.png?fileID=2800000&amp;guid=be961a780d62f104a9e0ab20ff022c53&amp;type=3#nf-external-link&quot;); margin-left: 4px;" />
+            </engine:Button>
+        </engine:VisualElement>
+        <engine:VisualElement name="BottomBar" style="flex-grow: 0; height: 50px; flex-direction: row; align-items: center; margin-left: 12px; margin-right: 12px;">
+            <engine:VisualElement name="NimbleLogo" style="flex-grow: 1; flex-direction: row; display: flex;">
+                <engine:VisualElement style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-logo-large.png?fileID=2800000&amp;guid=582d2c63a43f7fd44a1b3369803c9997&amp;type=3#nf-logo-large&quot;); width: 18px; height: 18px; -unity-background-scale-mode: scale-to-fit; -unity-background-image-tint-color: rgb(221, 221, 221);" />
+                <engine:Label text="Nimble Fox" style="-unity-font-style: bold; font-size: 12px; margin-left: 4px; -unity-text-align: middle-left; color: rgb(209, 209, 209);" />
+            </engine:VisualElement>
+            <engine:VisualElement style="flex-grow: 1;" />
+            <engine:Label text="v0.9.3" name="NimbleVersion" style="-unity-text-align: upper-right; -unity-background-image-tint-color: rgb(76, 76, 76); color: rgb(196, 196, 196);" />
+        </engine:VisualElement>
+        <engine:VisualElement name="LoadingOverlay" class="nf-loading-overlay" style="display: none;">
+            <engine:VisualElement name="LoadingPanel" class="nf-loading-panel">
+                <engine:VisualElement name="LoadingSpinner" class="nf-loading-spinner" style="background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-loading.png?fileID=2800000&amp;guid=955b2b9e71c215a4fb965694710122f4&amp;type=3#nf-loading&quot;);" />
+                <engine:Label name="LoadingLabel" text="Waiting for sign-in..." class="nf-loading-label" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

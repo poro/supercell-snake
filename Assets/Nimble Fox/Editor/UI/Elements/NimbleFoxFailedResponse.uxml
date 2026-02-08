@@ -1,0 +1,29 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-containers.uss?fileID=7433441132597879392&amp;guid=ba288676d0df1fa40b711dddf331466c&amp;type=3#nf-containers" />
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-reactive-button.uss?fileID=7433441132597879392&amp;guid=569790a38ecf9f54aa691d7383246fa3&amp;type=3#nf-reactive-button" />
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-error-responses.uss?fileID=7433441132597879392&amp;guid=cd63a1a2b5aaa8e4d8dfa3bc8f15bc42&amp;type=3#nf-error-responses" />
+    <engine:VisualElement style="flex-grow: 0; padding-left: 28px; margin-bottom: 2px;">
+        <engine:VisualElement name="ErrorResult" style="flex-grow: 0; flex-direction: row; margin-top: 8px; margin-bottom: 0; margin-right: 4px; margin-left: 0;">
+            <engine:VisualElement name="MessageContainer" style="flex-grow: 0; border-left-width: 2px; margin-bottom: 12px; padding-left: 4px;">
+                <engine:Label text="Oops, something went wrong." name="Text1" style="color: rgb(255, 255, 255); -unity-text-align: middle-left; text-overflow: ellipsis; flex-shrink: 0; white-space: normal; flex-wrap: wrap; overflow: hidden; max-height: 31px; -unity-font-style: bold; padding-left: 0; font-size: 12px;" />
+                <engine:Label text="Try reopening the window or contact us if the problem persists." name="Text2" style="color: rgb(255, 255, 255); -unity-text-align: middle-left; text-overflow: ellipsis; flex-shrink: 1; white-space: normal; flex-wrap: wrap; overflow: hidden; max-height: 31px; -unity-font-style: normal; padding-left: 0;" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
+            <engine:Button name="UpdateExtensionButton" class="nf-error-link-button nf-scaling-button-small" style="flex-direction: row; padding-top: 6px; padding-bottom: 6px;">
+                <engine:Label text="Update" style="-unity-background-image-tint-color: rgb(194, 194, 194); color: rgb(196, 196, 196);" />
+                <engine:VisualElement style="flex-grow: 0; position: relative; flex-shrink: 0; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-external-link.png?fileID=2800000&amp;guid=be961a780d62f104a9e0ab20ff022c53&amp;type=3#nf-external-link&quot;); width: 16px; height: 16px; top: auto; left: auto; margin-left: 2px;" />
+            </engine:Button>
+            <engine:Button name="SetAPIKeyButton" class="nf-error-link-button nf-scaling-button-small" style="flex-direction: row; padding-top: 6px; padding-bottom: 6px;">
+                <engine:Label text="Log in" name="NoticeLabel" style="color: rgb(196, 196, 196);" />
+            </engine:Button>
+            <engine:Button name="BuyMoreTokensButton" class="nf-scaling-button-small nf-error-link-button-2" style="flex-direction: row; padding-top: 6px; padding-bottom: 6px;">
+                <engine:Label text="Get More" style="color: rgb(255, 255, 255);" />
+            </engine:Button>
+            <engine:Button name="SomethingWentWrongButton" class="nf-error-link-button nf-scaling-button-small" style="flex-direction: row; padding-top: 6px; padding-bottom: 6px;">
+                <engine:Label text="Contact" name="NoticeLabel" style="color: rgb(196, 196, 196);" />
+                <engine:VisualElement style="flex-grow: 0; position: relative; flex-shrink: 0; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-external-link.png?fileID=2800000&amp;guid=be961a780d62f104a9e0ab20ff022c53&amp;type=3#nf-external-link&quot;); width: 16px; height: 16px; top: auto; left: auto; margin-left: 2px;" />
+            </engine:Button>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

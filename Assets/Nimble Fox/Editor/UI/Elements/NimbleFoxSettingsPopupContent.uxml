@@ -1,0 +1,22 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-project-desctription-input.uss?fileID=7433441132597879392&amp;guid=bec1ef8e1cb0dbd4ca0626f55e8708c7&amp;type=3#nf-project-desctription-input" />
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-reactive-button.uss?fileID=7433441132597879392&amp;guid=569790a38ecf9f54aa691d7383246fa3&amp;type=3#nf-reactive-button" />
+    <engine:VisualElement name="SettingsPopupContent" style="flex-grow: 0; width: 300px; height: 450px; margin-left: 16px; margin-right: 16px; margin-top: 32px; background-color: rgb(43, 43, 43);">
+        <engine:VisualElement name="ProjectDescriptionGroup" style="flex-grow: 0; padding-bottom: 0; margin-top: 4px; padding-left: 0; padding-right: 0; margin-left: 8px; margin-right: 8px;">
+            <engine:Label text="Project Description" name="ProjectDescription" style="-unity-text-align: upper-left; margin-top: 2px; margin-bottom: 4px; -unity-font-style: bold; color: rgb(200, 200, 200);" />
+            <engine:TextField placeholder-text="project description" name="ProjectDescriptionInput" max-length="50" multiline="true" style="flex-grow: 1; white-space: normal; margin-left: 0; margin-right: 0;" />
+            <engine:Label text="0/50" name="DescriptionLenghtLabel" style="-unity-text-align: middle-center; color: rgb(147, 147, 147); margin-left: 4px; position: absolute; top: auto; left: auto; bottom: 7px; right: 12px;" />
+        </engine:VisualElement>
+        <engine:VisualElement style="flex-grow: 0; flex-direction: row; padding-left: 8px; align-self: auto; align-items: center;">
+            <engine:VisualElement name="DescriptionUpdated" style="flex-grow: 1; flex-direction: row; display: flex; opacity: 0;">
+                <engine:VisualElement style="flex-grow: 0; width: 18px; height: 18px; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-checkmark.png?fileID=2800000&amp;guid=dc0ad1969a03f8a4299b59339d2d62ab&amp;type=3#nf-checkmark&quot;); -unity-background-image-tint-color: rgb(87, 87, 87);" />
+                <engine:Label text="Description updated" style="-unity-text-align: middle-left; -unity-background-image-tint-color: rgb(87, 87, 87); color: rgb(87, 87, 87);" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <engine:VisualElement name="ClearSettings" style="flex-grow: 0; flex-direction: column; margin-top: 32px; margin-bottom: 4px; margin-left: 8px; margin-right: 8px;">
+            <engine:Label text="Manage Cache" style="margin-bottom: 4px; color: rgb(196, 196, 196); -unity-font-style: bold;" />
+            <engine:Button text="Clear History" name="ClearMessageHistory" class="nf-scaling-button-small" style="flex-grow: 1; padding-left: 0; padding-right: 0; margin-right: 0; margin-left: 0; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; padding-top: 8px; padding-bottom: 8px; border-left-color: rgb(87, 87, 87); border-right-color: rgb(87, 87, 87); border-top-color: rgb(87, 87, 87); border-bottom-color: rgb(87, 87, 87); background-color: rgb(60, 60, 60); margin-bottom: 8px; color: rgb(196, 196, 196);" />
+            <engine:Button text="Clear Trash" name="ClearTrash" class="nf-scaling-button-small" style="flex-grow: 1; margin-left: 0; margin-right: 0; padding-right: 0; padding-left: 0; padding-top: 8px; padding-bottom: 8px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; border-left-color: rgb(87, 87, 87); border-right-color: rgb(87, 87, 87); border-top-color: rgb(87, 87, 87); border-bottom-color: rgb(87, 87, 87); background-color: rgb(60, 60, 60); color: rgb(196, 196, 196);" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

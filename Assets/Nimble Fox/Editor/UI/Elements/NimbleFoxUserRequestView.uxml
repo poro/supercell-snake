@@ -1,0 +1,18 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Nimble%20Fox/Editor/UI/Styles/nf-reactive-button.uss?fileID=7433441132597879392&amp;guid=569790a38ecf9f54aa691d7383246fa3&amp;type=3#nf-reactive-button" />
+    <engine:VisualElement name="UserRequestView" style="flex-grow: 0; flex-direction: row; margin-top: 8px; margin-bottom: 0; margin-left: 4px; margin-right: 4px;">
+        <engine:VisualElement name="MessageBody" style="flex-grow: 0; margin-right: 12px; overflow: hidden; margin-bottom: 6px;">
+            <engine:Label name="ContentText" style="white-space: normal; -unity-font-style: bold; margin-top: 6px; min-width: 100px; text-overflow: clip; padding-top: 0; margin-left: 28px; padding-left: 0;" />
+            <engine:VisualElement name="DisplayContent" style="flex-grow: 0; flex-direction: column; margin-left: 28px; flex-wrap: nowrap; align-content: center; margin-bottom: 4px; max-width: 325px; flex-shrink: 0;">
+                <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
+                    <engine:VisualElement name="UserRequestPreviewContainer" style="flex-grow: 0; flex-wrap: wrap; flex-shrink: 0;" />
+                    <engine:VisualElement name="GenerateNewContent" style="flex-grow: 1;" />
+                    <engine:VisualElement style="flex-grow: 0; flex-direction: column-reverse;">
+                        <engine:Button text="1x" name="RegenerateButton" class="nf-button-style-default" style="-unity-font-style: bold; width: 81px; display: none;" />
+                    </engine:VisualElement>
+                </engine:VisualElement>
+                <engine:Button text="Confirm" name="ConfirmChoiceButton" class="nf-confirm-button" style="margin-top: 4px; margin-bottom: 4px; -unity-font-style: bold;" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

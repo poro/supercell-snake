@@ -1,0 +1,32 @@
+#ActionProgress {
+    width: 100%;              /* or fixed width */
+    height: 6px;
+    border-radius: 0px;
+    background-color: transparent; /* track color */
+    overflow: hidden;         /* clip the fill */
+}
+
+/* The fill element */
+#ActionProgress #Fill {
+    height: 100%;
+    border-radius: 3px;
+    background-image: resource("gradient_100x100"); /* your image in Resources */
+    background-size: cover;
+    background-position: center;
+
+    /* Smooth fill animation */
+    transition-property: width;
+}
+
+.bar-empty {
+    width: 0%; /* start empty */
+    transition-duration: 10s;
+    transition-timing-function: ease-out;
+}
+
+.bar-filled {
+    
+    width: 100%; /* start empty */
+    transition-duration: 10s;
+    transition-timing-function: ease-out;
+}

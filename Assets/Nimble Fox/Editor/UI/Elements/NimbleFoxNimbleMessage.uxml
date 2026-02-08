@@ -1,0 +1,31 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-reactive-button.uss?fileID=7433441132597879392&amp;guid=569790a38ecf9f54aa691d7383246fa3&amp;type=3#nf-reactive-button" />
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-progress-bar-max.uss?fileID=7433441132597879392&amp;guid=6b1c475b9a6460e49b3c8544291dba99&amp;type=3#nf-progress-bar-max" />
+    <engine:VisualElement name="NimbleMessage" style="flex-grow: 0; flex-direction: row-reverse; margin-top: 8px; margin-bottom: 8px; margin-left: 8px; margin-right: 8px;">
+        <engine:VisualElement name="MessageBody" style="flex-grow: 1; margin-right: 12px; overflow: hidden;">
+            <engine:VisualElement name="Header" style="flex-grow: 0; flex-direction: row; flex-shrink: 0; align-items: center; margin-bottom: 6px;">
+                <engine:VisualElement name="NimbleFoxIcon" style="flex-grow: 0; flex-shrink: 0; width: 18px; height: 18px; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-logo.png?fileID=2800000&amp;guid=91e69a2a5c41f794f9c5ac8667a4f1fc&amp;type=3#nf-logo&quot;); overflow: hidden; margin-right: 10px; flex-wrap: nowrap; -unity-background-scale-mode: stretch-to-fill; align-items: stretch; justify-content: space-between;" />
+                <engine:Label text="Nimble Fox" name="ActorName" style="-unity-font-style: bold; -unity-text-align: middle-left;" />
+                <engine:Label text="Worked for 56s" name="WorkStatus" style="color: rgb(132, 132, 132); -unity-text-align: middle-right; text-overflow: ellipsis; overflow: hidden;" />
+            </engine:VisualElement>
+            <engine:VisualElement name="ProgressBarGroup" style="flex-grow: 1; margin-left: 28px; height: 30px;">
+                <engine:Label text="Thinking..." style="margin-bottom: 0;" />
+                <engine:VisualElement name="ActionProgress" style="flex-grow: 0;">
+                    <engine:VisualElement name="Fill" class="bar-empty" />
+                </engine:VisualElement>
+            </engine:VisualElement>
+            <engine:Label text="Initial response message from NimbleFox" name="InitialResponse" selectable="true" focusable="true" style="white-space: normal; -unity-font-style: bold; margin-top: 6px; min-width: 100px; text-overflow: clip; padding-top: 0; margin-left: 28px; padding-left: 4px;" />
+            <engine:VisualElement name="MessageContent" style="flex-grow: 0;">
+                <engine:VisualElement name="AssetSelection" style="flex-grow: 0;" />
+                <engine:VisualElement name="Actions" style="flex-grow: 0;" />
+            </engine:VisualElement>
+            <engine:VisualElement name="ErrorContent" style="flex-grow: 0;" />
+            <engine:Label text="Closure message for finishing off the message" name="ClosureResponse" selectable="true" focusable="true" style="white-space: normal; -unity-font-style: bold; margin-top: 6px; min-width: 100px; text-overflow: clip; padding-top: 0; margin-left: 28px; padding-left: 4px;" />
+            <engine:VisualElement name="EndBar" style="flex-grow: 0; flex-direction: row; margin-left: 24px; margin-top: 8px;">
+                <engine:Button name="LikeButton" class="nf-scaling-button nf-button-style-1" style="width: 20px; height: 20px; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-like.png?fileID=2800000&amp;guid=bf8e04b97117854499c2bb17cbcfeb5e&amp;type=3#nf-like&quot;); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(88, 88, 88, 0); overflow: visible; padding-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0;" />
+                <engine:Button name="DislikeButton" class="nf-scaling-button nf-button-style-1" style="width: 20px; height: 20px; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-dislike.png?fileID=2800000&amp;guid=c1accee0ccf7ad64aa2ea4e2846afd28&amp;type=3#nf-dislike&quot;); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(88, 88, 88, 0);" />
+                <engine:Button name="CopyButton" class="nf-scaling-button nf-button-style-1" style="width: 20px; height: 20px; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-copy.png?fileID=2800000&amp;guid=f45058b30a4b04243ab391ca505d294d&amp;type=3#nf-copy&quot;); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(88, 88, 88, 0);" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

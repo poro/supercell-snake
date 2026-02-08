@@ -1,0 +1,21 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-asset-library.uss?fileID=7433441132597879392&amp;guid=6e8ce2452b6466f47816797348462309&amp;type=3#nf-asset-library" />
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-reactive-button.uss?fileID=7433441132597879392&amp;guid=569790a38ecf9f54aa691d7383246fa3&amp;type=3#nf-reactive-button" />
+    <engine:Button name="AssetLibraryItemButton" class="asset-button" style="width: 100px; height: 100px; flex-direction: column-reverse;">
+        <engine:VisualElement name="CornerHighLight" style="flex-grow: 1; background-color: rgb(255, 160, 40); position: absolute; width: 20px; height: 20px; top: -10px; left: auto; rotate: 45deg; display: none; right: -10px;" />
+        <engine:VisualElement style="flex-grow: 0; position: relative; flex-direction: row; align-content: auto; justify-content: center; align-items: center; margin-left: 4px; margin-right: 4px;">
+            <engine:VisualElement name="ItemTypeIcon" style="flex-grow: 0; width: 12px; height: 12px; background-image: resource(&apos;nf-prefab&apos;); flex-shrink: 0;" />
+            <engine:Label name="ItemName" text="name" style="-unity-text-align: middle-left; flex-grow: 0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" />
+        </engine:VisualElement>
+        <engine:Button name="DownloadButton" class="settings-button nf-scaling-button" style="position: absolute; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-download.png?fileID=2800000&amp;guid=84e24ab4a5952d342a519ce645a9fb7a&amp;type=3#nf-download&quot;); width: 24px; height: 24px; -unity-background-scale-mode: scale-to-fit; top: 0; left: auto; right: 0;" />
+        <engine:Button name="SyncButton" class="settings-button nf-scaling-button" style="position: absolute; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-sync.png?fileID=2800000&amp;guid=d9d72b291e51e734b9484c5b96e6dc42&amp;type=3#nf-sync&quot;); width: 24px; height: 24px; -unity-background-scale-mode: scale-to-fit; top: 0; left: auto; right: 0;" />
+        <engine:Button name="DeleteButton" class="settings-button nf-scaling-button" style="position: absolute; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-delete-new.png?fileID=2800000&amp;guid=b63b98d9db5debd46945e6399dbb4a23&amp;type=3#nf-delete-new&quot;); width: 24px; height: 24px; -unity-background-scale-mode: scale-to-fit; top: 0; left: auto; -unity-background-image-tint-color: rgb(132, 132, 132); right: 0;" />
+        <engine:VisualElement name="LoadingIconBase" picking-mode="Ignore" style="flex-grow: 1; position: absolute; right: 0; bottom: 0; top: 0; left: 0; background-color: rgba(0, 0, 0, 0.4); align-items: center; justify-content: center;">
+            <engine:VisualElement name="LoadingIcon" style="flex-grow: 0; position: relative; width: 40px; height: 40px; top: auto; left: auto; right: auto; bottom: auto; background-image: url(&quot;project://database/Assets/Nimble Fox/Editor/UI/Icons/nf-loading.png?fileID=2800000&amp;guid=955b2b9e71c215a4fb965694710122f4&amp;type=3#nf-loading&quot;);" />
+        </engine:VisualElement>
+    </engine:Button>
+    <engine:VisualElement name="AssetLibraryCollapsetItemButton" class="collapsed-asset-button" style="flex-grow: 0; flex-direction: row; height: 18px; display: flex; align-self: auto; justify-content: flex-start; align-items: center;">
+        <engine:VisualElement name="CollapsedItemTypeIcon" style="flex-grow: 0; width: 16px; background-image: resource(&apos;nf-prefab&apos;); height: 16px; margin-left: 5px; margin-right: 5px;" />
+        <engine:Label name="CollapsedItemName" style="-unity-text-align: middle-left; flex-grow: 1;" />
+    </engine:VisualElement>
+</engine:UXML>

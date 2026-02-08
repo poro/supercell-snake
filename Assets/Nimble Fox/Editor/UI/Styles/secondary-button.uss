@@ -1,0 +1,11 @@
+.secondary-button {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.secondary-button:hover {
+    background-color: #575757;
+}
+
+.secondary-button:active {
+    background-color: #848484;
+}

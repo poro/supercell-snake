@@ -1,0 +1,185 @@
+.darkened Label {
+    color: rgb(255, 255, 255);
+}
+
+.selected {
+    background-color: rgb(170, 95, 45);
+    border-top-width: 6px;
+    border-right-width: 6px;
+    border-bottom-width: 6px;
+    border-left-width: 6px;
+    border-left-color: rgb(255, 160, 40);
+    border-right-color: rgb(255, 160, 40);
+    border-top-color: rgb(255, 160, 40);
+    border-bottom-color: rgb(255, 160, 40);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0);
+}
+
+.highlight {
+    border-left-color: rgb(170, 95, 45);
+    border-right-color: rgb(170, 95, 45);
+    border-top-color: rgb(170, 95, 45);
+    border-bottom-color: rgb(170, 95, 45);
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    transition-property: border-left-color, border-top-color, border-right-color, border-bottom-color;
+    transition-duration: 0.1s, 0.1s, 0.1s, 0.1s;
+    transition-timing-function: ease-in-out, ease-in-out, ease-in-out, ease-in-out;
+    background-color: rgb(108, 55, 31);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0);
+}
+
+.darkened {
+    border-top-width: 6px;
+    border-right-width: 6px;
+    border-bottom-width: 6px;
+    border-left-width: 6px;
+    border-left-color: rgb(60, 60, 60);
+    border-right-color: rgb(60, 60, 60);
+    border-top-color: rgb(60, 60, 60);
+    border-bottom-color: rgb(60, 60, 60);
+    background-color: rgb(43, 43, 43);
+    -unity-background-image-tint-color: rgba(106, 106, 106, 0);
+}
+
+.locked_unimplemented Label {
+    color: rgb(87, 87, 87);
+}
+
+.locked_unimplemented_selected Label {
+    color: rgb(87, 87, 87);
+}
+
+.locked_unimplemented_highlighted Label {
+    color: rgb(87, 87, 87);
+}
+
+.unlocked_unimplemented Label {
+    color: rgb(87, 87, 87);
+}
+
+.unlocked_unimplemented_highlighted Label {
+    color: rgb(87, 87, 87);
+}
+
+.unlocked_unimplemented_selected Label {
+    color: rgb(87, 87, 87);
+}
+
+.darkened {
+    border-top-width: 6px;
+    border-right-width: 6px;
+    border-bottom-width: 6px;
+    border-left-width: 6px;
+    border-left-color: rgb(60, 60, 60);
+    border-right-color: rgb(60, 60, 60);
+    border-top-color: rgb(60, 60, 60);
+    border-bottom-color: rgb(60, 60, 60);
+    background-color: rgb(43, 43, 43);
+    -unity-background-image-tint-color: rgba(106, 106, 106, 0);
+}
+
+.locked_unimplemented {
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    border-left-color: rgb(60, 60, 60);
+    border-right-color: rgb(60, 60, 60);
+    border-top-color: rgb(60, 60, 60);
+    border-bottom-color: rgb(60, 60, 60);
+    background-color: rgb(43, 43, 43);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.04);
+}
+
+.locked_unimplemented_selected {
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    border-left-color: rgb(255, 160, 40);
+    border-right-color: rgb(255, 160, 40);
+    border-top-color: rgb(255, 160, 40);
+    border-bottom-color: rgb(255, 160, 40);
+    background-color: rgb(43, 43, 43);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.04);
+}
+
+.locked_unimplemented_highlighted {
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    border-left-color: rgb(196, 196, 196);
+    border-right-color: rgb(196, 196, 196);
+    border-top-color: rgb(196, 196, 196);
+    border-bottom-color: rgb(196, 196, 196);
+    background-color: rgb(43, 43, 43);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.04);
+}
+
+.unlocked_unimplemented {
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    border-left-color: rgb(60, 60, 60);
+    border-right-color: rgb(60, 60, 60);
+    border-top-color: rgb(60, 60, 60);
+    border-bottom-color: rgb(60, 60, 60);
+    background-color: rgb(43, 43, 43);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0);
+}
+
+.unlocked_unimplemented_highlighted {
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    border-left-color: rgb(196, 196, 196);
+    border-right-color: rgb(196, 196, 196);
+    border-top-color: rgb(196, 196, 196);
+    border-bottom-color: rgb(196, 196, 196);
+    background-color: rgb(60, 60, 60);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0);
+}
+
+.unlocked_unimplemented_selected {
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    border-left-color: rgb(255, 160, 40);
+    border-right-color: rgb(255, 160, 40);
+    border-top-color: rgb(255, 160, 40);
+    border-bottom-color: rgb(255, 160, 40);
+    background-color: rgb(60, 60, 60);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0);
+}
+
+.project_node Label {
+    color: rgb(255, 255, 255);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.project_node {
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0);
+    background-color: rgba(87, 87, 87, 0);
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    border-left-color: rgb(196, 196, 196);
+    border-right-color: rgb(196, 196, 196);
+    border-top-color: rgb(196, 196, 196);
+    border-bottom-color: rgb(196, 196, 196);
+    border-top-left-radius: 56px;
+    border-top-right-radius: 56px;
+    border-bottom-right-radius: 56px;
+    border-bottom-left-radius: 56px;
+}

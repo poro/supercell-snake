@@ -1,0 +1,41 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Nimble%20Fox/Editor/UI/Styles/nf-containers.uss?fileID=7433441132597879392&amp;guid=ba288676d0df1fa40b711dddf331466c&amp;type=3#nf-containers" />
+    <Style src="project://database/Assets/Nimble%20Fox/Editor/UI/Styles/nf-reactive-button.uss?fileID=7433441132597879392&amp;guid=569790a38ecf9f54aa691d7383246fa3&amp;type=3#nf-reactive-button" />
+    <engine:VisualElement name="ActionResult" style="flex-grow: 0; flex-direction: row; margin-top: 8px; margin-bottom: 0; margin-right: 4px; margin-left: 4px;">
+        <engine:VisualElement name="NimbleFoxIcon" style="flex-grow: 0; flex-shrink: 0; width: 18px; height: 18px; background-image: none; overflow: hidden; margin-right: 10px; flex-wrap: nowrap; -unity-background-scale-mode: stretch-to-fill;" />
+        <engine:VisualElement style="flex-grow: 1;">
+            <engine:VisualElement name="CraftingStatusRow" style="flex-grow: 1; flex-direction: row; align-items: center; justify-content: flex-start;">
+                <engine:VisualElement name="ActionResultIcon" style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Nimble%20Fox/Editor/UI/Icons/nf-lightbulb.png?fileID=2800000&amp;guid=525c84c007b5238429631a41cecdd6a0&amp;type=3#nf-lightbulb&quot;); width: 12px; justify-content: flex-start; -unity-background-scale-mode: scale-to-fit; margin-left: 4px; margin-right: 4px; height: 12px;" />
+                <engine:Label text="Crafted 4 actions for 48 seconds" name="CraftingStatus" style="color: rgb(132, 132, 132); -unity-text-align: middle-left; text-overflow: ellipsis; flex-shrink: 1; white-space: normal; flex-wrap: wrap; overflow: hidden; max-height: 31px;" />
+                <engine:Button text="Show all" name="ShowAllToggle" class="nf-button-style-default" style="-unity-font-style: bold;" />
+            </engine:VisualElement>
+            <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
+                <engine:VisualElement name="ActionsContent" class="nf-container-1 nf-scaling-button-small" style="flex-grow: 0; margin-top: 12px; margin-right: 12px; margin-bottom: 14px; min-width: 250px; flex-shrink: 1; min-height: 70px; cursor: initial; padding-bottom: 8px;">
+                    <engine:VisualElement name="Title" style="flex-grow: 0; flex-direction: row; margin-top: 6px; margin-bottom: 4px; margin-left: 10px; margin-right: 10px; flex-shrink: 0;">
+                        <engine:Button name="RunActionsButton" text="Run actions" style="background-image: none; width: 91px; height: 18px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(136, 95, 58, 0); -unity-font-style: bold; -unity-text-align: middle-right; padding-right: 2px; flex-direction: row; padding-left: 2px; align-items: center;">
+                            <engine:VisualElement name="Icon" style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Nimble%20Fox/Editor/UI/Icons/nf-play.png?fileID=2800000&amp;guid=f6e7ea49809ab4a4b960314f00060ae6&amp;type=3#nf-play&quot;); width: 20px; height: 20px; margin-right: 4px; margin-left: -4px;" />
+                        </engine:Button>
+                        <engine:VisualElement name="RunningNotification" style="flex-grow: 1; flex-direction: row; align-items: center; display: none;">
+                            <engine:VisualElement name="LoadingIcon" style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Nimble%20Fox/Editor/UI/Icons/nf-loading.png?fileID=2800000&amp;guid=955b2b9e71c215a4fb965694710122f4&amp;type=3#nf-loading&quot;); width: 12px; height: 12px;" />
+                            <engine:Label text="Running, please wait..." style="-unity-text-align: middle-left; margin-left: 3px; margin-right: 3px; padding-left: 2px; padding-top: 1px; margin-top: 1px; padding-bottom: 1px; margin-bottom: 1px; color: rgb(132, 132, 132);" />
+                        </engine:VisualElement>
+                    </engine:VisualElement>
+                    <engine:VisualElement name="UndoTitle" style="flex-grow: 0; flex-direction: row; margin-top: 6px; margin-bottom: 4px; margin-left: 10px; margin-right: 10px; flex-shrink: 0;">
+                        <engine:Button name="RestoreActionsButton" text="Restore" class="nf-scaling-button-small" style="background-image: none; width: 67px; height: 18px; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; background-color: rgba(136, 95, 58, 0); -unity-font-style: bold; -unity-text-align: middle-right; padding-right: 2px; flex-direction: row; padding-left: 2px; align-items: center;">
+                            <engine:VisualElement name="Icon" style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Nimble%20Fox/Editor/UI/Icons/nf-undo.png?fileID=2800000&amp;guid=c0ce263ebdb42054c9d1a734a439d035&amp;type=3#nf-undo&quot;); width: 20px; height: 20px; margin-right: 4px; margin-left: -4px;" />
+                        </engine:Button>
+                    </engine:VisualElement>
+                    <engine:VisualElement name="ChangeActions" class="nf-container-2" style="flex-grow: 1; margin-left: 4px; margin-right: 4px; margin-bottom: 8px; flex-shrink: 0; display: flex;">
+                        <engine:VisualElement name="Content" style="flex-grow: 1; -unity-background-image-tint-color: rgb(40, 40, 40); margin-bottom: 8px; margin-top: 8px; margin-right: 4px; margin-left: 4px; flex-shrink: 0; padding-right: 4px; padding-left: 4px; padding-bottom: 4px; padding-top: 4px; display: flex; flex-direction: row; flex-wrap: wrap;" />
+                    </engine:VisualElement>
+                    <engine:VisualElement style="flex-grow: 1; position: absolute; bottom: -14px; right: -14px;">
+                        <engine:Button text="     Restore" name="RestoreAllButton" style="border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; border-left-color: rgb(92, 92, 92); border-right-color: rgb(92, 92, 92); border-top-color: rgb(92, 92, 92); border-bottom-color: rgb(92, 92, 92); background-color: rgb(39, 39, 37); width: 73px; -unity-text-align: middle-right; padding-bottom: 4px; padding-top: 4px; display: none;">
+                            <engine:VisualElement style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Nimble%20Fox/Editor/UI/Icons/nf-undo.png?fileID=2800000&amp;guid=c0ce263ebdb42054c9d1a734a439d035&amp;type=3#nf-undo&quot;); width: 14px; height: 14px;" />
+                        </engine:Button>
+                    </engine:VisualElement>
+                    <engine:Label text="Restoring also reverts N of your actions" name="RestoreWarningText" selectable="true" picking-mode="Ignore" style="margin-left: 12px; white-space: normal; width: 210px; display: flex; color: rgb(255, 255, 255); -unity-font-style: normal; font-size: 10px; margin-top: 6px;" />
+                </engine:VisualElement>
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

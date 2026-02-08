@@ -1,0 +1,113 @@
+.nf-container-1 {
+    background-color: rgb(170, 95, 45);
+    border-color: rgb(255, 160, 40);
+    border-width: 2px;
+    border-radius: 20px;
+}
+
+.nf-container-1:hover {
+    border-color: rgb(255, 190, 61);
+}
+
+.nf-error-container-1 {
+    background-color: rgb(170, 45, 46);
+    border-color: rgb(255, 160, 40);
+    border-width: 2px;
+    border-radius: 20px;
+    border-left-color: rgb(255, 44, 40);
+    border-right-color: rgb(255, 44, 40);
+    border-top-color: rgb(255, 44, 40);
+    border-bottom-color: rgb(255, 44, 40);
+}
+
+.nf-error-container-1:hover {
+    border-color: rgb(255, 190, 61);
+    border-left-color: rgb(255, 160, 40);
+    border-right-color: rgb(255, 160, 40);
+    border-top-color: rgb(255, 160, 40);
+    border-bottom-color: rgb(255, 160, 40);
+}
+
+.nf-container-2 {
+    background-color: rgb(60, 60, 60);
+    border-color: rgb(87, 87, 87);
+    border-width: 2px;
+    border-radius: 20px;
+}
+
+.nf-container-3 {
+    background-color: rgb(30, 30, 30);
+    border-color: rgb(87, 87, 87);
+    border-width: 2px;
+    border-radius: 20px;
+}
+
+.nf-container-2-interactable {
+    background-color: rgb(60, 60, 60);
+    border-color: rgb(87, 87, 87);
+    border-width: 2px;
+    border-radius: 20px;
+}
+
+.nf-container-2-interactable:hover {
+    border-color: rgb(132, 132, 132);
+}
+
+.nf-container-2-interactable:disabled {
+    border-color: rgb(87, 87, 87);
+}
+
+.nf-container-2-entitlement-locked {
+    background-color: rgb(45, 45, 45);
+    border-color: rgb(70, 70, 70);
+    opacity: 0.55;
+}
+
+.nf-container-2-entitlement-locked:hover {
+    border-color: rgb(70, 70, 70);
+}
+
+.nf-container-2-generation-failed {
+    background-color: rgb(45, 45, 45);
+    border-color: rgb(70, 70, 70);
+    opacity: 0.55;
+}
+
+.nf-container-2-generation-failed:hover {
+    border-color: rgb(70, 70, 70);
+}
+
+.nf-container-2-interactable-selected {
+    background-color: rgb(60, 60, 60);
+    border-color: rgb(255, 160, 40);
+    border-width: 2px;
+    border-radius: 20px;
+}
+
+.nf-container-2-interactable-selected:hover {
+    border-color: rgb(255, 190, 61);
+}
+
+.nf-button-style-1:hover {
+    -unity-background-image-tint-color: rgb(132, 132, 132);
+    border-color: rgb(132, 132, 132);
+    color: rgb(132, 132, 132);
+}
+
+.nf-button-style-1:active {
+    -unity-background-image-tint-color: rgb(196, 196, 196);
+    border-color: rgb(196, 196, 196);
+    color: rgb(196, 196, 196);
+}
+
+.nf-button-style-1:disabled #icon {
+    -unity-background-image-tint-color: rgb(60, 60, 60);
+    border-color: rgb(60, 60, 60);
+    color: rgb(60, 60, 60);
+}
+
+.nf-button-style-1:disabled {
+    -unity-background-image-tint-color: rgb(60, 60, 60);
+    border-color: rgb(60, 60, 60);
+    color: rgb(60, 60, 60);
+}

@@ -1,0 +1,14 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-node-inspector.uss?fileID=7433441132597879392&amp;guid=f00cbcc3fbe360c46bed648edbe119a4&amp;type=3#nf-node-inspector" />
+    <Style src="project://database/Assets/Nimble Fox/Editor/UI/Styles/nf-reactive-button.uss?fileID=7433441132597879392&amp;guid=569790a38ecf9f54aa691d7383246fa3&amp;type=3#nf-reactive-button" />
+    <engine:VisualElement name="Body" class="body" style="flex-grow: 1; position: relative; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; width: 300px; min-width: 250px;">
+        <engine:VisualElement style="flex-grow: 1;">
+            <engine:Label text="Combat System" name="NodeName" class="node-name" style="text-overflow: clip; white-space: normal; -unity-text-align: upper-center; overflow: hidden; margin-bottom: 8px;" />
+            <engine:VisualElement style="flex-grow: 1;">
+                <engine:Label text="This is the description of the node,  here you will see the full description what the node is supposed to do once implemented. This is the description of the node,  here you will see the full description what the node is supposed to do once implemented." name="NodeDescription" class="node-description" style="white-space: normal; flex-grow: 0;" />
+            </engine:VisualElement>
+            <engine:VisualElement name="AssosiatedElements" style="flex-grow: 0; flex-direction: column; align-items: flex-start; margin-top: 6px; margin-bottom: 6px;" />
+            <engine:Button text="Implement" name="ImplementButton" class="node_inspector_button" style="-unity-text-align: middle-center; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; color: rgb(255, 255, 255); height: 24px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

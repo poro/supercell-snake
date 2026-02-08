@@ -1,0 +1,17 @@
+.fade {
+    transition-property: opacity, visibility;
+    transition-duration: 0.2s; /* adjust fade speed */
+    transition-timing-function: ease-in-out;
+}
+
+/* Fade-in state */
+.fade-in {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Fade-out state */
+.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
