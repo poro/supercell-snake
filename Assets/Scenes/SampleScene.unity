@@ -286,7 +286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   gridWidth: 17
   gridHeight: 17
-  startSpeed: 0.14
-  maxSpeed: 0.055
+  startSpeed: 0.28
+  maxSpeed: 0.12
   speedStep: 0.002
   initialLength: 4

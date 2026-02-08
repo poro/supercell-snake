@@ -442,6 +442,134 @@ The 3D versions served as a critical bridge between the monochrome simplicity of
 
 ---
 
+## 16. Snake Sweeper — Snakes x Minesweeper Core Integration
+
+### 16.1 Concept
+
+Snake Sweeper fuses classic Snake gameplay with Minesweeper's hidden-information puzzle mechanic. Mines are concealed within the fog of war. The snake must eat all food on each level to advance, but hidden mines create a risk/reward layer: hitting a mine punishes the player with growth (making the snake harder to control), while successfully navigating adjacent to a mine rewards the player by shrinking the snake.
+
+The result is a slower, more deliberate Snake game where reading Minesweeper-style number hints and managing risk is as important as reflexes.
+
+### 16.2 Pacing and Speed
+
+The snake moves at a deliberately slow pace (startSpeed: 0.28s per tile, maxSpeed: 0.12s) — significantly slower than traditional Snake. This gives players time to read number hints, plan routes, and make strategic decisions about which tiles to cross.
+
+Speed increases slightly per level (0.02s per level), maintaining tension without overwhelming the puzzle-reading aspect.
+
+### 16.3 Mine Placement
+
+Mines are placed randomly at the start of each level, avoiding:
+- A 2-tile radius around the snake's starting position
+- Obstacle tiles
+- Food tiles
+
+**Mine density by level:**
+| Level | Mine Count |
+|---|---|
+| 1 | 4 |
+| 2–3 | 6 |
+| 4–6 | 10 |
+| 7+ | 14 |
+
+Mines are invisible until the snake's fog of war reveals them. Within the fog inner radius, mines appear as dark metallic spheres with protruding spikes (classic naval mine silhouette).
+
+### 16.4 Minesweeper Number Hints
+
+Every non-mine tile displays a number indicating how many orthogonally adjacent tiles (up/down/left/right — 4-way, not diagonal) contain mines. Numbers are color-coded:
+
+| Count | Color |
+|---|---|
+| 1 | Blue |
+| 2 | Green |
+| 3 | Orange |
+| 4 | Red |
+
+Numbers are only visible within the fog inner radius. Tiles with count 0 show nothing. Mine tiles themselves show no number. When a mine detonates, neighboring tile counts recalculate (numbers decrease as mines are removed).
+
+### 16.5 Mine Collision (Growth Penalty)
+
+When the snake moves onto a mine tile:
+1. **Growth**: Snake grows +3 segments instantly (longer snake = harder to maneuver)
+2. **Score penalty**: -15 x current level (minimum 0)
+3. **Crater**: Tile permanently darkens (detonated mine becomes a crater)
+4. **Explosion effect**: 12 orange-to-red particles expand outward over 0.6s
+5. **Screen shake**: Camera shakes for 0.2s
+6. **Freeze frame**: Game pauses for 0.3s (impact moment)
+7. **Explosion sound**: Multi-layered bass thump + crackle
+8. **Fog shrinks**: Vision radius drops to ~45% for 5 seconds, gradually restores over last 2s
+9. **Panic speed**: Snake moves at 2x speed for 3.5 seconds (loss of control)
+10. **Chain reaction**: Each orthogonally adjacent mine has 50% chance to also detonate (staggered 0.12s between each), adding +2 segments and -10 x level per chain
+
+The combination of reduced vision, increased speed, and a longer snake creates a cascading danger spiral — one mistake can snowball.
+
+### 16.6 Mine Avoidance (Shrink Reward)
+
+When the snake's head moves to a tile orthogonally adjacent to a mine (without stepping on it):
+1. **Shrink**: Snake loses 1 segment from the tail (minimum length: 1)
+2. **Score bonus**: +25 x current level
+3. **Sparkle effect**: 6 green spheres float upward in a circle over 0.4s
+4. **Sparkle sound**: Ascending C6-E6-G6 arpeggio
+
+Each mine can only grant one shrink reward per pass (cooldown resets when the head moves away).
+
+### 16.7 Proximity Heartbeat
+
+A procedural heartbeat sound (double-thump pulse) plays continuously, with volume and speed controlled by distance to the nearest active mine:
+- **Beyond fog radius**: Silent
+- **At fog outer edge**: Quiet, slow pulse
+- **Within inner radius**: Medium intensity
+- **Adjacent to mine**: Loud, rapid pounding
+
+This creates escalating dread before the player even sees a mine, reinforcing the Minesweeper tension of approaching unknown tiles.
+
+### 16.8 Multi-Food System
+
+Multiple food items spawn simultaneously at the start of each level:
+- **Food count**: 4 + current level (Level 1 = 5 food, Level 5 = 9 food)
+- Food items bob and spin for visual appeal
+- Food visibility scales with fog (invisible outside fog, full size within inner radius)
+- **Win condition**: Eat all food to advance to the next level
+- **Level bonus**: +50 x level on completion
+
+### 16.9 System Flow
+
+```
+Level Start
+  → Place mines (hidden) → Place obstacles → Spawn all food
+  → Player navigates using WASD/Arrows
+  → Fog reveals tiles, numbers, mines, and food as snake moves
+  → Heartbeat intensifies near mines
+  → Hit mine → Growth + Fog shrink + Panic speed + Chain reactions
+  → Pass by mine → Shrink + Score bonus
+  → Eat food → Growth + Score
+  → All food eaten → Level bonus → Next level (more mines, more food, faster)
+  → Hit wall/obstacle/self → Death → Reveal all mines and numbers
+```
+
+### 16.10 Scoring Summary
+
+| Event | Points |
+|---|---|
+| Food eaten | +10 x level |
+| Mine avoided (shrink) | +25 x level |
+| Mine hit (penalty) | -15 x level |
+| Chain detonation (penalty) | -10 x level per chain |
+| Level complete (bonus) | +50 x level |
+
+### 16.11 Death and Reveal
+
+On death, the full board is revealed: all remaining mines shown as red spheres, all number hints displayed, all obstacles and food at full brightness. This gives the player a "Minesweeper reveal moment" — seeing where every mine was and understanding what killed them.
+
+### 16.12 Design Rationale
+
+The growth-as-punishment / shrink-as-reward inversion is the core innovation. In classic Snake, growth is progress. In Snake Sweeper, growth is danger — a longer snake is harder to control in tight spaces. This inverts the player's relationship with the snake's length and creates a natural tension: do you risk passing near a mine to shrink, or take the safe route and stay long?
+
+The fog shrink + panic speed combo after a mine hit creates a genuine horror-survival moment: you made a mistake, and now you can see less, move faster, and are bigger. The heartbeat audio builds dread before visual contact, making the information-gathering phase feel tense rather than passive.
+
+Chain reactions add unpredictability — one mine can cascade into a disaster, making every mine hit feel like it could end the run.
+
+---
+
 ## Appendix A: Level Count Summary
 
 | Content | Levels | Platform |
