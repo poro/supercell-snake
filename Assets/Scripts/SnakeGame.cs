@@ -93,9 +93,12 @@ public class SnakeGame : MonoBehaviour
 
     // UI
     private Text scoreText, messageText, levelText, progressText, multiplierText;
-    private GameObject messagePanel, pausePanel;
-    private Text pauseText;
+    private GameObject messagePanel, pausePanel, splashPanel, creditsPanel;
+    private Text pauseText, splashPressText;
     private Image progressFill;
+    private bool showingSplash = true;
+    private bool showingCredits;
+    private readonly List<Transform> splashMines = new List<Transform>();
 
     // Tile palette
     private static readonly Color[] Palette =
@@ -123,11 +126,39 @@ public class SnakeGame : MonoBehaviour
         CreateLight();
         PositionCamera();
         CreateUI();
-        NewGame();
+        CreateSplashScreen();
+        CreateCreditsScreen();
+        ShowSplash();
     }
 
     private void Update()
     {
+        // Credits screen
+        if (showingCredits)
+        {
+            if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.C))
+            {
+                HideCredits();
+            }
+            return;
+        }
+
+        // Splash screen
+        if (showingSplash)
+        {
+            AnimateSplash();
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                ShowCredits();
+            }
+            else if (Input.anyKeyDown)
+            {
+                HideSplash();
+                NewGame();
+            }
+            return;
+        }
+
         // Screen shake (runs even during freeze)
         if (shakeTimer > 0f)
         {
@@ -1623,6 +1654,323 @@ public class SnakeGame : MonoBehaviour
             messagePanel.GetComponent<Image>().color = new Color(0, 0, 0, 0.78f);
         }
         messagePanel.SetActive(true);
+    }
+
+    // ===================== SPLASH SCREEN =====================
+
+    private void CreateSplashScreen()
+    {
+        var canvas = GameObject.Find("Canvas");
+        if (!canvas) return;
+
+        splashPanel = new GameObject("SplashPanel");
+        splashPanel.transform.SetParent(canvas.transform, false);
+        var bg = splashPanel.AddComponent<Image>();
+        bg.color = new Color(0.01f, 0.01f, 0.04f, 1f);
+        var bgrt = bg.rectTransform;
+        bgrt.anchorMin = Vector2.zero;
+        bgrt.anchorMax = Vector2.one;
+        bgrt.offsetMin = Vector2.zero;
+        bgrt.offsetMax = Vector2.zero;
+
+        // Title: SNAKE SWEEPER
+        var titleGo = new GameObject("SplashTitle");
+        titleGo.transform.SetParent(splashPanel.transform, false);
+        var titleText = titleGo.AddComponent<Text>();
+        titleText.font = GetFont();
+        titleText.fontSize = 20;
+        titleText.supportRichText = true;
+        titleText.alignment = TextAnchor.MiddleCenter;
+        titleText.text =
+            "<size=72><color=#FF4488>SNAKE</color></size>\n" +
+            "<size=72><color=#44DDFF>SWEEPER</color></size>";
+        var trt = titleText.rectTransform;
+        trt.anchorMin = new Vector2(0, 0.45f);
+        trt.anchorMax = new Vector2(1, 0.85f);
+        trt.offsetMin = Vector2.zero;
+        trt.offsetMax = Vector2.zero;
+        var tol = titleGo.AddComponent<Outline>();
+        tol.effectColor = new Color(0.3f, 0f, 0.2f);
+        tol.effectDistance = new Vector2(3, 3);
+
+        // Tagline
+        var tagGo = new GameObject("SplashTag");
+        tagGo.transform.SetParent(splashPanel.transform, false);
+        var tagText = tagGo.AddComponent<Text>();
+        tagText.font = GetFont();
+        tagText.fontSize = 18;
+        tagText.supportRichText = true;
+        tagText.alignment = TextAnchor.MiddleCenter;
+        tagText.text =
+            "<color=#FFD700>Snake meets Minesweeper</color>\n" +
+            "<color=#888888>Read the numbers. Avoid the mines. Defuse them.</color>";
+        var tagrt = tagText.rectTransform;
+        tagrt.anchorMin = new Vector2(0.1f, 0.35f);
+        tagrt.anchorMax = new Vector2(0.9f, 0.48f);
+        tagrt.offsetMin = Vector2.zero;
+        tagrt.offsetMax = Vector2.zero;
+
+        // Press to start (animated)
+        var pressGo = new GameObject("SplashPress");
+        pressGo.transform.SetParent(splashPanel.transform, false);
+        splashPressText = pressGo.AddComponent<Text>();
+        splashPressText.font = GetFont();
+        splashPressText.fontSize = 24;
+        splashPressText.alignment = TextAnchor.MiddleCenter;
+        splashPressText.color = Color.white;
+        splashPressText.supportRichText = true;
+        splashPressText.text = "PRESS ANY KEY\n<size=16><color=#888888>C \u2014 Credits</color></size>";
+        var prt = splashPressText.rectTransform;
+        prt.anchorMin = new Vector2(0, 0.18f);
+        prt.anchorMax = new Vector2(1, 0.32f);
+        prt.offsetMin = Vector2.zero;
+        prt.offsetMax = Vector2.zero;
+        var pol = pressGo.AddComponent<Outline>();
+        pol.effectColor = Color.black;
+        pol.effectDistance = new Vector2(1, 1);
+
+        // Decorative mine icons (3D objects behind UI)
+        CreateSplashMines();
+
+        // Footer: Hackathon credit
+        var footerGo = new GameObject("SplashFooter");
+        footerGo.transform.SetParent(splashPanel.transform, false);
+        var footerText = footerGo.AddComponent<Text>();
+        footerText.font = GetFont();
+        footerText.fontSize = 13;
+        footerText.supportRichText = true;
+        footerText.alignment = TextAnchor.LowerCenter;
+        footerText.text =
+            "<color=#666666>Supercell AI Lab Hackathon  |  February 6\u20138, 2026  |  MIT License</color>";
+        var frt = footerText.rectTransform;
+        frt.anchorMin = Vector2.zero;
+        frt.anchorMax = new Vector2(1, 0.08f);
+        frt.offsetMin = new Vector2(0, 8);
+        frt.offsetMax = Vector2.zero;
+
+        // Credits line
+        var credGo = new GameObject("SplashCredits");
+        credGo.transform.SetParent(splashPanel.transform, false);
+        var credText = credGo.AddComponent<Text>();
+        credText.font = GetFont();
+        credText.fontSize = 12;
+        credText.supportRichText = true;
+        credText.alignment = TextAnchor.LowerCenter;
+        credText.text =
+            "<color=#555555>Mark Ollila  |  Claude Code  |  Claude Desktop  |  ElevenLabs  |  Unity</color>";
+        var crt = credText.rectTransform;
+        crt.anchorMin = Vector2.zero;
+        crt.anchorMax = new Vector2(1, 0.05f);
+        crt.offsetMin = new Vector2(0, 8);
+        crt.offsetMax = Vector2.zero;
+
+        splashPanel.SetActive(false);
+    }
+
+    private void CreateSplashMines()
+    {
+        // Place decorative rotating mine shapes at various screen-space positions via world space
+        float cx = (gridWidth - 1) / 2f;
+        float cz = (gridHeight - 1) / 2f;
+        Vector3[] positions = {
+            new Vector3(cx - 5f, 0.3f, cz + 3f),
+            new Vector3(cx + 5f, 0.3f, cz + 3f),
+            new Vector3(cx - 3f, 0.3f, cz - 4f),
+            new Vector3(cx + 3f, 0.3f, cz - 4f),
+            new Vector3(cx, 0.3f, cz + 5f),
+            new Vector3(cx - 6f, 0.3f, cz - 1f),
+            new Vector3(cx + 6f, 0.3f, cz - 1f),
+        };
+
+        foreach (var pos in positions)
+        {
+            var root = new GameObject("SplashMine").transform;
+            root.position = pos;
+
+            var body = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            body.transform.SetParent(root, false);
+            body.transform.localScale = Vector3.one * 0.6f;
+            body.GetComponent<Renderer>().sharedMaterial = matMine;
+            Destroy(body.GetComponent<Collider>());
+
+            Vector3[] spikeDirs = { Vector3.right, Vector3.left, Vector3.forward, Vector3.back, Vector3.up, Vector3.down };
+            foreach (var dir in spikeDirs)
+            {
+                var spike = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                spike.transform.SetParent(root, false);
+                spike.transform.localPosition = dir * 0.35f;
+                spike.transform.localScale = Vector3.one * 0.1f;
+                spike.transform.localRotation = Quaternion.LookRotation(dir) * Quaternion.Euler(0, 0, 45f);
+                spike.GetComponent<Renderer>().sharedMaterial = matMine;
+                Destroy(spike.GetComponent<Collider>());
+            }
+
+            splashMines.Add(root);
+        }
+    }
+
+    private void ShowSplash()
+    {
+        showingSplash = true;
+        splashPanel.SetActive(true);
+        foreach (var m in splashMines)
+            if (m) m.gameObject.SetActive(true);
+    }
+
+    private void HideSplash()
+    {
+        showingSplash = false;
+        splashPanel.SetActive(false);
+        foreach (var m in splashMines)
+            if (m) Destroy(m.gameObject);
+        splashMines.Clear();
+    }
+
+    private void AnimateSplash()
+    {
+        // Pulse "PRESS ANY KEY" text
+        if (splashPressText)
+        {
+            float alpha = (Mathf.Sin(Time.time * 3f) + 1f) / 2f;
+            splashPressText.color = new Color(1f, 1f, 1f, Mathf.Lerp(0.2f, 1f, alpha));
+        }
+
+        // Rotate decorative mines
+        for (int i = 0; i < splashMines.Count; i++)
+        {
+            if (!splashMines[i]) continue;
+            float speed = 30f + i * 10f;
+            splashMines[i].Rotate(Vector3.up, speed * Time.deltaTime);
+            // Gentle bob
+            var pos = splashMines[i].position;
+            pos.y = 0.3f + Mathf.Sin(Time.time * 1.5f + i * 1.2f) * 0.15f;
+            splashMines[i].position = pos;
+        }
+    }
+
+    // ===================== CREDITS SCREEN =====================
+
+    private void CreateCreditsScreen()
+    {
+        var canvas = GameObject.Find("Canvas");
+        if (!canvas) return;
+
+        creditsPanel = new GameObject("CreditsPanel");
+        creditsPanel.transform.SetParent(canvas.transform, false);
+        var bg = creditsPanel.AddComponent<Image>();
+        bg.color = new Color(0.01f, 0.01f, 0.06f, 0.97f);
+        var bgrt = bg.rectTransform;
+        bgrt.anchorMin = Vector2.zero;
+        bgrt.anchorMax = Vector2.one;
+        bgrt.offsetMin = Vector2.zero;
+        bgrt.offsetMax = Vector2.zero;
+
+        // Title
+        var titleGo = new GameObject("CreditsTitle");
+        titleGo.transform.SetParent(creditsPanel.transform, false);
+        var titleText = titleGo.AddComponent<Text>();
+        titleText.font = GetFont();
+        titleText.fontSize = 20;
+        titleText.supportRichText = true;
+        titleText.alignment = TextAnchor.MiddleCenter;
+        titleText.text = "<size=48><color=#44DDFF>CREDITS</color></size>";
+        var trt = titleText.rectTransform;
+        trt.anchorMin = new Vector2(0, 0.82f);
+        trt.anchorMax = new Vector2(1, 0.95f);
+        trt.offsetMin = Vector2.zero;
+        trt.offsetMax = Vector2.zero;
+        var tol = titleGo.AddComponent<Outline>();
+        tol.effectColor = new Color(0f, 0.1f, 0.2f);
+        tol.effectDistance = new Vector2(2, 2);
+
+        // Human Overlord
+        var humanGo = new GameObject("CreditsHuman");
+        humanGo.transform.SetParent(creditsPanel.transform, false);
+        var humanText = humanGo.AddComponent<Text>();
+        humanText.font = GetFont();
+        humanText.fontSize = 20;
+        humanText.supportRichText = true;
+        humanText.alignment = TextAnchor.MiddleCenter;
+        humanText.text =
+            "<color=#FF4488>Human Overlord</color>\n\n" +
+            "<size=28><color=#FFFFFF>Mark Ollila</color></size>\n" +
+            "<size=16><color=#888888>Endless Games and Learning Lab, Arizona State University</color></size>\n" +
+            "<size=14><color=#44AAFF>linkedin.com/in/markollila</color></size>";
+        var hrt = humanText.rectTransform;
+        hrt.anchorMin = new Vector2(0.1f, 0.58f);
+        hrt.anchorMax = new Vector2(0.9f, 0.82f);
+        hrt.offsetMin = Vector2.zero;
+        hrt.offsetMax = Vector2.zero;
+
+        // AI Tools
+        var toolsGo = new GameObject("CreditsTools");
+        toolsGo.transform.SetParent(creditsPanel.transform, false);
+        var toolsText = toolsGo.AddComponent<Text>();
+        toolsText.font = GetFont();
+        toolsText.fontSize = 20;
+        toolsText.supportRichText = true;
+        toolsText.alignment = TextAnchor.MiddleCenter;
+        toolsText.text =
+            "<color=#FF4488>Built With</color>\n\n" +
+            "<size=20><color=#FFFFFF>Claude Code</color>  <color=#666666>\u2014  All code authoring and file system operations</color></size>\n" +
+            "<size=20><color=#FFFFFF>Claude Desktop</color>  <color=#666666>\u2014  Game design document creation</color></size>\n" +
+            "<size=20><color=#FFFFFF>ElevenLabs</color>  <color=#666666>\u2014  Sound effects and music</color></size>\n" +
+            "<size=20><color=#FFFFFF>Unity 6</color>  <color=#666666>\u2014  Game engine</color></size>";
+        var tlrt = toolsText.rectTransform;
+        tlrt.anchorMin = new Vector2(0.05f, 0.28f);
+        tlrt.anchorMax = new Vector2(0.95f, 0.58f);
+        tlrt.offsetMin = Vector2.zero;
+        tlrt.offsetMax = Vector2.zero;
+
+        // GitHub
+        var ghGo = new GameObject("CreditsGitHub");
+        ghGo.transform.SetParent(creditsPanel.transform, false);
+        var ghText = ghGo.AddComponent<Text>();
+        ghText.font = GetFont();
+        ghText.fontSize = 18;
+        ghText.supportRichText = true;
+        ghText.alignment = TextAnchor.MiddleCenter;
+        ghText.text =
+            "<color=#FFD700>Source Code</color>\n" +
+            "<size=18><color=#44AAFF>github.com/poro/supercell-snake</color></size>";
+        var ghrt = ghText.rectTransform;
+        ghrt.anchorMin = new Vector2(0.1f, 0.16f);
+        ghrt.anchorMax = new Vector2(0.9f, 0.28f);
+        ghrt.offsetMin = Vector2.zero;
+        ghrt.offsetMax = Vector2.zero;
+
+        // Footer
+        var footGo = new GameObject("CreditsFooter");
+        footGo.transform.SetParent(creditsPanel.transform, false);
+        var footText = footGo.AddComponent<Text>();
+        footText.font = GetFont();
+        footText.fontSize = 14;
+        footText.supportRichText = true;
+        footText.alignment = TextAnchor.MiddleCenter;
+        footText.text =
+            "<color=#666666>Supercell AI Lab Hackathon  |  February 6\u20138, 2026  |  MIT License</color>\n" +
+            "<size=16><color=#888888>PRESS ANY KEY TO RETURN</color></size>";
+        var frt = footText.rectTransform;
+        frt.anchorMin = new Vector2(0, 0.02f);
+        frt.anchorMax = new Vector2(1, 0.14f);
+        frt.offsetMin = Vector2.zero;
+        frt.offsetMax = Vector2.zero;
+
+        creditsPanel.SetActive(false);
+    }
+
+    private void ShowCredits()
+    {
+        showingCredits = true;
+        creditsPanel.SetActive(true);
+        splashPanel.SetActive(false);
+    }
+
+    private void HideCredits()
+    {
+        showingCredits = false;
+        creditsPanel.SetActive(false);
+        splashPanel.SetActive(true);
     }
 
     // ===================== AUDIO =====================
