@@ -66,7 +66,7 @@ public class SnakeGame : MonoBehaviour
 
     // Audio
     private AudioSource audioSource;
-    private AudioClip clipExplosion, clipEat, clipShrink;
+    private AudioClip clipExplosion, clipEat, clipShrink, clipDeath;
     private AudioSource heartbeatSource;
     private AudioClip clipHeartbeat;
     private float fogPenaltyTimer;
@@ -457,6 +457,8 @@ public class SnakeGame : MonoBehaviour
         }
         RevealAllTiles();
         RevealMines();
+        if (audioSource && clipDeath) audioSource.PlayOneShot(clipDeath, 0.9f);
+        if (heartbeatSource) heartbeatSource.volume = 0f;
         ShowMessage($"GAME OVER\n\nLevel: {level}  Score: {score}\n\nPress SPACE to restart");
     }
 
@@ -1477,51 +1479,50 @@ public class SnakeGame : MonoBehaviour
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = 0f;
 
-        // --- Explosion: bass thump + mid crunch + crackle, ~0.8s ---
+        // Load audio files from Resources/Audio (MP3s imported via Unity)
+        clipExplosion = Resources.Load<AudioClip>("Audio/explosion");
+        clipEat = Resources.Load<AudioClip>("Audio/eat");
+        clipDeath = Resources.Load<AudioClip>("Audio/death");
+
+        // Procedural fallback if audio files are missing
+        if (!clipExplosion)
         {
-            int rate = 44100;
-            int samples = (int)(rate * 0.8f);
+            int rate = 44100; int samples = (int)(rate * 0.8f);
             float[] data = new float[samples];
             System.Random rng = new System.Random(42);
             for (int i = 0; i < samples; i++)
             {
                 float t = (float)i / rate;
                 float transient = Mathf.Exp(-t * 40f) * 0.5f;
-                float bassEnv = Mathf.Exp(-t * 4f);
-                float bass = Mathf.Sin(2f * Mathf.PI * 45f * t) * bassEnv * 0.5f;
-                float midEnv = Mathf.Exp(-t * 6f);
+                float bass = Mathf.Sin(2f * Mathf.PI * 45f * t) * Mathf.Exp(-t * 4f) * 0.5f;
                 float mid = (Mathf.Sin(2f * Mathf.PI * 180f * t)
-                           + Mathf.Sin(2f * Mathf.PI * 260f * t) * 0.5f) * midEnv * 0.3f;
-                float hiEnv = Mathf.Exp(-t * 8f);
-                float hi = ((float)rng.NextDouble() * 2f - 1f) * hiEnv * 0.35f;
+                           + Mathf.Sin(2f * Mathf.PI * 260f * t) * 0.5f) * Mathf.Exp(-t * 6f) * 0.3f;
+                float hi = ((float)rng.NextDouble() * 2f - 1f) * Mathf.Exp(-t * 8f) * 0.35f;
                 data[i] = Mathf.Clamp(transient + bass + mid + hi, -1f, 1f);
             }
             clipExplosion = AudioClip.Create("Explosion", samples, 1, rate, false);
             clipExplosion.SetData(data, 0);
         }
 
-        // --- Eat: two-tone blip-bloop, ~0.25s ---
+        if (!clipEat)
         {
-            int rate = 44100;
-            int samples = (int)(rate * 0.25f);
+            int rate = 44100; int samples = (int)(rate * 0.25f);
             float[] data = new float[samples];
             for (int i = 0; i < samples; i++)
             {
                 float t = (float)i / rate;
                 float env1 = t < 0.08f ? Mathf.Exp(-t * 20f) : 0f;
                 float env2 = t >= 0.06f ? Mathf.Exp(-(t - 0.06f) * 16f) : 0f;
-                float tone1 = Mathf.Sin(2f * Mathf.PI * 880f * t) * env1;
-                float tone2 = Mathf.Sin(2f * Mathf.PI * 1320f * t) * env2;
-                data[i] = (tone1 + tone2) * 0.45f;
+                data[i] = (Mathf.Sin(2f * Mathf.PI * 880f * t) * env1
+                         + Mathf.Sin(2f * Mathf.PI * 1320f * t) * env2) * 0.45f;
             }
             clipEat = AudioClip.Create("Eat", samples, 1, rate, false);
             clipEat.SetData(data, 0);
         }
 
-        // --- Shrink: ascending sparkle arpeggio (C6-E6-G6), ~0.35s ---
+        // --- Shrink: ascending sparkle arpeggio (C6-E6-G6) — always procedural ---
         {
-            int rate = 44100;
-            int samples = (int)(rate * 0.35f);
+            int rate = 44100; int samples = (int)(rate * 0.35f);
             float[] data = new float[samples];
             float[] notes = { 1047f, 1319f, 1568f };
             for (int i = 0; i < samples; i++)
@@ -1534,8 +1535,7 @@ public class SnakeGame : MonoBehaviour
                     if (t >= noteStart)
                     {
                         float nt = t - noteStart;
-                        float env = Mathf.Exp(-nt * 10f);
-                        val += Mathf.Sin(2f * Mathf.PI * notes[n] * t) * env * 0.25f;
+                        val += Mathf.Sin(2f * Mathf.PI * notes[n] * t) * Mathf.Exp(-nt * 10f) * 0.25f;
                     }
                 }
                 data[i] = val;
@@ -1544,10 +1544,9 @@ public class SnakeGame : MonoBehaviour
             clipShrink.SetData(data, 0);
         }
 
-        // --- Heartbeat: double-thump pulse, ~0.9s ---
+        // --- Heartbeat: double-thump pulse — always procedural ---
         {
-            int rate = 44100;
-            int samples = (int)(rate * 0.9f);
+            int rate = 44100; int samples = (int)(rate * 0.9f);
             float[] data = new float[samples];
             for (int i = 0; i < samples; i++)
             {
