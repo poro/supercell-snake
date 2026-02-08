@@ -52,7 +52,7 @@ No dragging objects in the scene view. No clicking through inspectors. No import
 - **Platform**: macOS (Apple Silicon)
 - **Language**: C# (.NET)
 - **Rendering**: URP Forward Renderer, procedural materials using `Universal Render Pipeline/Lit` shader
-- **Audio**: Procedurally generated at runtime using `AudioClip.Create()` — no audio files in the project
+- **Audio**: Sound effects and background music generated with [ElevenLabs](https://elevenlabs.io), loaded at runtime from `Resources/Audio/`. Heartbeat and shrink sparkle remain procedurally generated via `AudioClip.Create()`
 - **UI**: Unity Canvas with runtime-created Text, Image, and layout components
 - **3D Objects**: All built from Unity primitives (Cube, Sphere) composed at runtime
 
@@ -87,6 +87,7 @@ GAME_DESIGN_DOCUMENT.md   # Full GDD including Snake Sweeper design (Section 16)
 |---|---|
 | [Claude Desktop](https://claude.ai) | Game design document creation and iteration |
 | [Claude Code](https://claude.ai/claude-code) | All code authoring, file system operations, git management, GitHub setup |
+| [ElevenLabs](https://elevenlabs.io) | Sound effects (explosion, food pickup, death) and background music loop ("Snakes Lair") |
 | [Unity 6](https://unity.com) | Game engine (press Play to test) |
 
 ## License
