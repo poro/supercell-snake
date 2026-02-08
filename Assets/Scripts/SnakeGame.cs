@@ -68,6 +68,7 @@ public class SnakeGame : MonoBehaviour
     private AudioSource audioSource;
     private AudioClip clipExplosion, clipEat, clipShrink, clipDeath;
     private AudioSource heartbeatSource;
+    private AudioSource musicSource;
     private AudioClip clipHeartbeat;
     private float fogPenaltyTimer;
     private float panicTimer;
@@ -407,7 +408,7 @@ public class SnakeGame : MonoBehaviour
             score += 10 * level;
             foodEatenThisLevel++;
             UpdateHUD();
-            if (audioSource && clipEat) audioSource.PlayOneShot(clipEat, 0.5f);
+            if (audioSource && clipEat) audioSource.PlayOneShot(clipEat, 1f);
         }
         else
         {
@@ -1568,6 +1569,19 @@ public class SnakeGame : MonoBehaviour
         heartbeatSource.spatialBlend = 0f;
         heartbeatSource.volume = 0f;
         heartbeatSource.Play();
+
+        // Background music
+        AudioClip musicClip = Resources.Load<AudioClip>("Audio/music");
+        if (musicClip)
+        {
+            musicSource = gameObject.AddComponent<AudioSource>();
+            musicSource.clip = musicClip;
+            musicSource.loop = true;
+            musicSource.playOnAwake = false;
+            musicSource.spatialBlend = 0f;
+            musicSource.volume = 0.3f;
+            musicSource.Play();
+        }
     }
 
     // ===================== MINE VISUAL =====================
