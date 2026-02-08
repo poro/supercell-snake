@@ -161,7 +161,7 @@ public class SnakeGame : MonoBehaviour
             return;
         }
 
-        // Screen shake (runs even during freeze)
+        // Screen shake (runs even during freeze) — strong, dramatic
         if (shakeTimer > 0f)
         {
             shakeTimer -= Time.deltaTime;
@@ -170,8 +170,8 @@ public class SnakeGame : MonoBehaviour
             {
                 if (shakeTimer > 0f)
                 {
-                    float intensity = shakeTimer * 2f;
-                    cam.transform.position = cameraBasePos + Random.insideUnitSphere * intensity * 0.15f;
+                    float intensity = shakeTimer * 3f;
+                    cam.transform.position = cameraBasePos + Random.insideUnitSphere * intensity * 0.35f;
                 }
                 else
                 {
@@ -343,10 +343,10 @@ public class SnakeGame : MonoBehaviour
         SyncVisuals();
         UpdateHUD();
         ShowMessage(
-            "<size=52><color=#FF4488>SNAKE</color> <color=#44DDFF>SWEEPER</color></size>\n\n" +
-            "<size=22><color=#AAAAAA>WASD / Arrow Keys</color></size>\n" +
-            "<size=20><color=#FFD700>Read the numbers. Avoid the mines.</color></size>\n\n" +
-            "<size=22><color=#FFFFFF>Press any key to start</color></size>", true);
+            "<size=80><color=#FF4488><b>SNAKE</b></color> <color=#44DDFF><b>SWEEPER</b></color></size>\n\n" +
+            "<size=36><color=#AAAAAA>WASD / Arrow Keys</color></size>\n" +
+            "<size=32><color=#FFD700><b>Read the numbers. Avoid the mines.</b></color></size>\n\n" +
+            "<size=38><color=#FFFFFF>Press any key to start</color></size>", true);
     }
 
     private void StartLevel()
@@ -376,10 +376,10 @@ public class SnakeGame : MonoBehaviour
             inTransition = true;
             transitionTimer = 5f;
             ShowMessage(
-                "<size=52><color=#FFD700>YOU WIN!</color></size>\n\n" +
-                "<size=28><color=#00FF88>All 10 levels cleared!</color></size>\n\n" +
-                $"<size=36><color=#FF44FF>Score: {score}</color></size>\n\n" +
-                "<size=22><color=#44DDFF>...entering ENDLESS mode</color></size>", true);
+                "<size=96><color=#FFD700><b>YOU WIN!</b></color></size>\n\n" +
+                "<size=44><color=#00FF88><b>All 10 levels cleared!</b></color></size>\n\n" +
+                $"<size=56><color=#FF44FF><b>Score: {score}</b></color></size>\n\n" +
+                "<size=36><color=#44DDFF>...entering ENDLESS mode</color></size>", true);
             return;
         }
 
@@ -391,10 +391,10 @@ public class SnakeGame : MonoBehaviour
         if (level > 10)
         {
             ShowMessage(
-                $"<size=48><color=#FF00FF>ENDLESS</color></size>\n" +
-                $"<size=36><color=#44DDFF>Level {level}</color></size>\n\n" +
-                $"<size=28><color=#FFD700>+{bonus} BONUS</color></size>\n\n" +
-                "<size=22><color=#AAAAAA>Survive.</color></size>", true);
+                $"<size=80><color=#FF00FF><b>ENDLESS</b></color></size>\n" +
+                $"<size=56><color=#44DDFF><b>Level {level}</b></color></size>\n\n" +
+                $"<size=44><color=#FFD700><b>+{bonus} BONUS</b></color></size>\n\n" +
+                "<size=36><color=#AAAAAA>Survive.</color></size>", true);
         }
         else
         {
@@ -402,9 +402,9 @@ public class SnakeGame : MonoBehaviour
             string[] neonColors = { "#00FF88", "#FF4488", "#44DDFF", "#FFD700", "#FF6600", "#AA44FF", "#00FFFF", "#FF0066", "#88FF00" };
             string accent = neonColors[(level - 2) % neonColors.Length];
             ShowMessage(
-                $"<size=56><color={accent}>LEVEL {level}</color></size>\n\n" +
-                $"<size=30><color=#FFD700>+{bonus} BONUS</color></size>\n\n" +
-                "<size=24><color=#FFFFFF>Get ready!</color></size>", true);
+                $"<size=96><color={accent}><b>LEVEL {level}</b></color></size>\n\n" +
+                $"<size=48><color=#FFD700><b>+{bonus} BONUS</b></color></size>\n\n" +
+                "<size=36><color=#FFFFFF>Get ready!</color></size>", true);
         }
     }
 
@@ -616,9 +616,9 @@ public class SnakeGame : MonoBehaviour
         if (audioSource && clipDeath) audioSource.PlayOneShot(clipDeath, 0.9f);
         if (heartbeatSource) heartbeatSource.volume = 0f;
         ShowMessage(
-            "<size=52><color=#FF2222>GAME OVER</color></size>\n\n" +
-            $"<size=28><color=#AAAAAA>Level: {level}</color>  <color=#FFD700>Score: {score}</color></size>\n\n" +
-            "<size=22><color=#FFFFFF>Press SPACE to restart</color></size>", true);
+            "<size=96><color=#FF2222><b>GAME OVER</b></color></size>\n\n" +
+            $"<size=44><color=#AAAAAA>Level: {level}</color>  <color=#FFD700><b>Score: {score}</b></color></size>\n\n" +
+            "<size=36><color=#FFFFFF>Press SPACE to restart</color></size>", true);
     }
 
     // ===================== FOOD =====================
@@ -759,11 +759,13 @@ public class SnakeGame : MonoBehaviour
             mat.SetColor("_Color", craterColor);
         }
 
-        // Effects
+        // Effects — big dramatic explosion
         StartCoroutine(ExplosionEffect(GridToWorld(pos, 0.3f)));
-        freezeTimer = 0.3f;
-        shakeTimer = 0.2f;
-        if (audioSource && clipExplosion) audioSource.PlayOneShot(clipExplosion, 0.8f);
+        freezeTimer = 0.5f;
+        shakeTimer = 0.6f;
+        if (audioSource && clipExplosion) audioSource.PlayOneShot(clipExplosion, 1f);
+        // Screen flash via temporary bright tile flash
+        StartCoroutine(ScreenFlash());
 
         // Fog shrinks — reduced vision after mine hit
         fogPenaltyTimer = 5f;
@@ -1212,49 +1214,173 @@ public class SnakeGame : MonoBehaviour
         if (!shader) shader = Shader.Find("Unlit/Color");
         if (!shader) shader = Shader.Find("Universal Render Pipeline/Lit");
 
-        var particles = new List<Transform>();
-        var directions = new List<Vector3>();
-        int count = 12;
+        var allObjects = new List<Transform>();
 
-        for (int i = 0; i < count; i++)
+        // === PHASE 1: Bright flash sphere (instant fireball) ===
+        var flash = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        flash.name = "ExplosionFlash";
+        Destroy(flash.GetComponent<Collider>());
+        flash.transform.position = worldPos + Vector3.up * 0.1f;
+        flash.transform.localScale = Vector3.one * 0.1f;
+        var flashMat = new Material(shader);
+        flashMat.SetColor("_BaseColor", new Color(1f, 0.95f, 0.7f));
+        flashMat.SetColor("_Color", new Color(1f, 0.95f, 0.7f));
+        flash.GetComponent<Renderer>().material = flashMat;
+        allObjects.Add(flash.transform);
+
+        // Flash expands then fades
+        float flashDur = 0.25f;
+        float flashElapsed = 0f;
+        while (flashElapsed < flashDur)
+        {
+            flashElapsed += Time.deltaTime;
+            float ft = flashElapsed / flashDur;
+            if (flash)
+            {
+                float scale = Mathf.Lerp(0.3f, 2.5f, ft);
+                flash.transform.localScale = Vector3.one * scale;
+                float alpha = Mathf.Lerp(1f, 0f, ft * ft);
+                Color fc = new Color(1f, Mathf.Lerp(0.9f, 0.2f, ft), Mathf.Lerp(0.5f, 0f, ft), alpha);
+                flashMat.SetColor("_BaseColor", fc);
+                flashMat.SetColor("_Color", fc);
+            }
+            yield return null;
+        }
+        if (flash) Destroy(flash.gameObject);
+        allObjects.Clear();
+
+        // === PHASE 2: Shrapnel burst (cubes flying outward) ===
+        var shrapnel = new List<Transform>();
+        var shrapDirs = new List<Vector3>();
+        var shrapSpeeds = new List<float>();
+        var shrapSpins = new List<Vector3>();
+        int shrapCount = 24;
+
+        for (int i = 0; i < shrapCount; i++)
         {
             var p = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            p.name = "ExplosionParticle";
+            p.name = "Shrapnel";
             Destroy(p.GetComponent<Collider>());
-            p.transform.position = worldPos;
-            p.transform.localScale = Vector3.one * 0.15f;
+            p.transform.position = worldPos + Random.insideUnitSphere * 0.15f;
+            float size = Random.Range(0.08f, 0.22f);
+            p.transform.localScale = Vector3.one * size;
+            p.transform.rotation = Random.rotation;
             var mat = new Material(shader);
-            Color startColor = new Color(1f, 0.6f, 0f);
+            Color startColor = Color.Lerp(new Color(1f, 0.7f, 0f), new Color(1f, 0.3f, 0f), Random.value);
             mat.SetColor("_BaseColor", startColor);
             mat.SetColor("_Color", startColor);
             p.GetComponent<Renderer>().material = mat;
-            particles.Add(p.transform);
-            directions.Add(Random.onUnitSphere * Random.Range(1f, 3f));
+            shrapnel.Add(p.transform);
+            allObjects.Add(p.transform);
+
+            Vector3 dir = Random.onUnitSphere;
+            dir.y = Mathf.Abs(dir.y); // bias upward
+            shrapDirs.Add(dir);
+            shrapSpeeds.Add(Random.Range(2f, 6f));
+            shrapSpins.Add(Random.insideUnitSphere * 720f);
         }
 
-        float duration = 0.6f;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
+        float shrapDur = 0.8f;
+        float shrapElapsed = 0f;
+        while (shrapElapsed < shrapDur)
         {
-            elapsed += Time.deltaTime;
-            float t = elapsed / duration;
-            for (int i = 0; i < particles.Count; i++)
+            shrapElapsed += Time.deltaTime;
+            float t = shrapElapsed / shrapDur;
+            for (int i = 0; i < shrapnel.Count; i++)
             {
-                if (!particles[i]) continue;
-                particles[i].position = worldPos + directions[i] * t;
-                float s = Mathf.Lerp(0.15f, 0.02f, t);
-                particles[i].localScale = Vector3.one * s;
-                Color c = Color.Lerp(new Color(1f, 0.6f, 0f), new Color(1f, 0.15f, 0f), t);
-                var pmat = particles[i].GetComponent<Renderer>().material;
+                if (!shrapnel[i]) continue;
+                // Fly outward with gravity
+                Vector3 pos = worldPos + shrapDirs[i] * shrapSpeeds[i] * t;
+                pos.y += 1.5f * t - 3f * t * t; // arc up then fall
+                shrapnel[i].position = pos;
+                shrapnel[i].Rotate(shrapSpins[i] * Time.deltaTime);
+
+                float s = Mathf.Lerp(shrapnel[i].localScale.x, 0f, t * t);
+                shrapnel[i].localScale = Vector3.one * Mathf.Max(0.01f, s);
+
+                Color c = Color.Lerp(
+                    new Color(1f, 0.5f, 0f),
+                    new Color(0.3f, 0.05f, 0f),
+                    t);
+                var pmat = shrapnel[i].GetComponent<Renderer>().material;
                 pmat.SetColor("_BaseColor", c);
                 pmat.SetColor("_Color", c);
             }
             yield return null;
         }
 
-        foreach (var p in particles)
-            if (p) Destroy(p.gameObject);
+        // === PHASE 3: Lingering embers (small spheres drifting up) ===
+        var embers = new List<Transform>();
+        int emberCount = 10;
+        for (int i = 0; i < emberCount; i++)
+        {
+            var e = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            e.name = "Ember";
+            Destroy(e.GetComponent<Collider>());
+            e.transform.position = worldPos + new Vector3(
+                Random.Range(-0.5f, 0.5f), Random.Range(0f, 0.3f), Random.Range(-0.5f, 0.5f));
+            e.transform.localScale = Vector3.one * Random.Range(0.04f, 0.10f);
+            var mat = new Material(shader);
+            Color ec = new Color(1f, Random.Range(0.2f, 0.5f), 0f);
+            mat.SetColor("_BaseColor", ec);
+            mat.SetColor("_Color", ec);
+            e.GetComponent<Renderer>().material = mat;
+            embers.Add(e.transform);
+            allObjects.Add(e.transform);
+        }
+
+        float emberDur = 0.7f;
+        float emberElapsed = 0f;
+        while (emberElapsed < emberDur)
+        {
+            emberElapsed += Time.deltaTime;
+            float t = emberElapsed / emberDur;
+            for (int i = 0; i < embers.Count; i++)
+            {
+                if (!embers[i]) continue;
+                embers[i].position += Vector3.up * Time.deltaTime * Random.Range(0.5f, 1.5f);
+                float s = Mathf.Lerp(embers[i].localScale.x, 0f, t);
+                embers[i].localScale = Vector3.one * Mathf.Max(0.005f, s);
+            }
+            yield return null;
+        }
+
+        // Cleanup everything
+        foreach (var obj in allObjects)
+            if (obj) Destroy(obj.gameObject);
+    }
+
+    private IEnumerator ScreenFlash()
+    {
+        // Full-screen white flash that fades to red then gone
+        var canvas = GameObject.Find("Canvas");
+        if (!canvas) yield break;
+
+        var flashGo = new GameObject("ScreenFlash");
+        flashGo.transform.SetParent(canvas.transform, false);
+        var flashImg = flashGo.AddComponent<Image>();
+        flashImg.color = new Color(1f, 0.8f, 0.5f, 0.7f);
+        flashImg.raycastTarget = false;
+        var frt = flashImg.rectTransform;
+        frt.anchorMin = Vector2.zero;
+        frt.anchorMax = Vector2.one;
+        frt.offsetMin = Vector2.zero;
+        frt.offsetMax = Vector2.zero;
+
+        float dur = 0.4f;
+        float elapsed = 0f;
+        while (elapsed < dur)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / dur;
+            flashImg.color = new Color(
+                Mathf.Lerp(1f, 0.8f, t),
+                Mathf.Lerp(0.8f, 0.1f, t),
+                Mathf.Lerp(0.5f, 0f, t),
+                Mathf.Lerp(0.7f, 0f, t * t));
+            yield return null;
+        }
+        Destroy(flashGo);
     }
 
     private IEnumerator ShrinkSparkle(Vector3 worldPos)
@@ -1554,14 +1680,14 @@ public class SnakeGame : MonoBehaviour
         prt2.offsetMin = Vector2.zero;
         prt2.offsetMax = Vector2.zero;
 
-        // Message panel
+        // Message panel (full screen overlay)
         messagePanel = new GameObject("MsgPanel");
         messagePanel.transform.SetParent(canvasGo.transform, false);
         var img = messagePanel.AddComponent<Image>();
         img.color = new Color(0, 0, 0, 0.78f);
         var prt = img.rectTransform;
-        prt.anchorMin = new Vector2(0.12f, 0.15f);
-        prt.anchorMax = new Vector2(0.88f, 0.85f);
+        prt.anchorMin = new Vector2(0.02f, 0.05f);
+        prt.anchorMax = new Vector2(0.98f, 0.95f);
         prt.offsetMin = Vector2.zero;
         prt.offsetMax = Vector2.zero;
 
@@ -1569,17 +1695,17 @@ public class SnakeGame : MonoBehaviour
         msgGo.transform.SetParent(messagePanel.transform, false);
         messageText = msgGo.AddComponent<Text>();
         messageText.font = GetFont();
-        messageText.fontSize = 28;
+        messageText.fontSize = 48;
         messageText.color = Color.white;
         messageText.alignment = TextAnchor.MiddleCenter;
         var mrt = messageText.rectTransform;
         mrt.anchorMin = Vector2.zero;
         mrt.anchorMax = Vector2.one;
-        mrt.offsetMin = new Vector2(20, 20);
-        mrt.offsetMax = new Vector2(-20, -20);
+        mrt.offsetMin = new Vector2(10, 10);
+        mrt.offsetMax = new Vector2(-10, -10);
         var msgOutline = msgGo.AddComponent<Outline>();
         msgOutline.effectColor = Color.black;
-        msgOutline.effectDistance = new Vector2(1, 1);
+        msgOutline.effectDistance = new Vector2(2, 2);
 
         // Pause overlay
         pausePanel = new GameObject("PausePanel");
