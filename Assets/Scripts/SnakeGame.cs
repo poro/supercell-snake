@@ -97,7 +97,7 @@ public class SnakeGame : MonoBehaviour
     private Text scoreText, messageText, levelText, progressText, multiplierText;
     private GameObject messagePanel, pausePanel, splashPanel, creditsPanel, instructionsPanel;
     private Text pauseText, splashPressText, instructionsText, instructionsPageText;
-    private Image progressFill;
+    // progressFill removed — food icons used instead
     private bool showingSplash = true;
     private bool showingCredits;
     private bool showingInstructions;
@@ -1676,40 +1676,18 @@ public class SnakeGame : MonoBehaviour
         lol.effectDistance = new Vector2(1.5f, 1.5f);
 
         // Progress bar (top right)
-        var barBg = new GameObject("ProgressBarBg");
-        barBg.transform.SetParent(canvasGo.transform, false);
-        var bgImg = barBg.AddComponent<Image>();
-        bgImg.color = new Color(0.15f, 0.15f, 0.15f, 0.85f);
-        var bgrt = bgImg.rectTransform;
-        bgrt.anchorMin = new Vector2(0.68f, 1);
-        bgrt.anchorMax = new Vector2(0.96f, 1);
-        bgrt.pivot = new Vector2(1, 1);
-        bgrt.sizeDelta = new Vector2(0, 36);
-        bgrt.anchoredPosition = new Vector2(0, -8);
-
-        var barFill = new GameObject("ProgressBarFill");
-        barFill.transform.SetParent(barBg.transform, false);
-        progressFill = barFill.AddComponent<Image>();
-        progressFill.color = new Color(0.2f, 0.85f, 0.3f);
-        progressFill.type = Image.Type.Filled;
-        progressFill.fillMethod = Image.FillMethod.Horizontal;
-        progressFill.fillAmount = 0f;
-        var frt = progressFill.rectTransform;
-        frt.anchorMin = Vector2.zero;
-        frt.anchorMax = Vector2.one;
-        frt.offsetMin = new Vector2(2, 2);
-        frt.offsetMax = new Vector2(-2, -2);
-
-        progressText = MakeText(barBg.transform, "ProgressText", 24, TextAnchor.MiddleCenter);
+        // Food icons (top right)
+        progressText = MakeText(canvasGo.transform, "FoodIcons", 32, TextAnchor.UpperRight);
         progressText.supportRichText = true;
         var prt2 = progressText.rectTransform;
-        prt2.anchorMin = Vector2.zero;
-        prt2.anchorMax = Vector2.one;
-        prt2.offsetMin = Vector2.zero;
-        prt2.offsetMax = Vector2.zero;
+        prt2.anchorMin = new Vector2(0.5f, 1);
+        prt2.anchorMax = new Vector2(1, 1);
+        prt2.pivot = new Vector2(1, 1);
+        prt2.sizeDelta = new Vector2(0, 45);
+        prt2.anchoredPosition = new Vector2(-16, -6);
         var ptol = progressText.gameObject.AddComponent<Outline>();
         ptol.effectColor = Color.black;
-        ptol.effectDistance = new Vector2(1, 1);
+        ptol.effectDistance = new Vector2(2, 2);
 
         // Message panel (full screen overlay)
         messagePanel = new GameObject("MsgPanel");
@@ -1791,8 +1769,17 @@ public class SnakeGame : MonoBehaviour
     {
         scoreText.text = $"SCORE  {score:D6}";
         levelText.text = level > 10 ? $"ENDLESS {level}" : $"LEVEL {level}";
-        progressFill.fillAmount = totalFoodThisLevel > 0 ? (float)foodEatenThisLevel / totalFoodThisLevel : 0;
-        progressText.text = $"<b>FOOD  {foodEatenThisLevel} / {totalFoodThisLevel}</b>";
+        // Food icons: ● for eaten, ○ for remaining
+        var sb = new System.Text.StringBuilder();
+        for (int i = 0; i < totalFoodThisLevel; i++)
+        {
+            if (i > 0) sb.Append(" ");
+            if (i < foodEatenThisLevel)
+                sb.Append("<color=#FFD700>\u25CF</color>");
+            else
+                sb.Append("<color=#AA8800>\u25CB</color>");
+        }
+        progressText.text = sb.ToString();
 
         if (multiplierText)
         {
