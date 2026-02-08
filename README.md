@@ -4,6 +4,8 @@
 
 Built entirely with AI — the Unity editor was only used to press Play.
 
+Created at the **Supercell AI Lab Hackathon** (February 6–8, 2025).
+
 ## How It Was Built
 
 This project demonstrates a fundamentally different way to build a Unity game:
@@ -78,8 +80,8 @@ GAME_DESIGN_DOCUMENT.md   # Full GDD including Snake Sweeper design (Section 16)
 
 ## Branches
 
-- `main` — Base Unity project with initial Snake 3D implementation
-- `snake-sweeper` — Full Snakes x Minesweeper integration with mine mechanics, sound, chain reactions, fog penalty, panic mode, and proximity heartbeat
+- `main` — The working game (merged from snake-sweeper)
+- `snake-sweeper` — Feature branch history for the Minesweeper integration
 
 ## Tools Used
 
@@ -92,4 +94,4 @@ GAME_DESIGN_DOCUMENT.md   # Full GDD including Snake Sweeper design (Section 16)
 
 ## License
 
-This project is a personal experiment in AI-assisted game development.
+MIT License — see [LICENSE](LICENSE) for details.
