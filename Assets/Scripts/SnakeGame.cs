@@ -1679,13 +1679,13 @@ public class SnakeGame : MonoBehaviour
         var barBg = new GameObject("ProgressBarBg");
         barBg.transform.SetParent(canvasGo.transform, false);
         var bgImg = barBg.AddComponent<Image>();
-        bgImg.color = new Color(0.15f, 0.15f, 0.15f, 0.8f);
+        bgImg.color = new Color(0.15f, 0.15f, 0.15f, 0.85f);
         var bgrt = bgImg.rectTransform;
-        bgrt.anchorMin = new Vector2(0.7f, 1);
+        bgrt.anchorMin = new Vector2(0.68f, 1);
         bgrt.anchorMax = new Vector2(0.96f, 1);
         bgrt.pivot = new Vector2(1, 1);
-        bgrt.sizeDelta = new Vector2(0, 18);
-        bgrt.anchoredPosition = new Vector2(0, -14);
+        bgrt.sizeDelta = new Vector2(0, 36);
+        bgrt.anchoredPosition = new Vector2(0, -8);
 
         var barFill = new GameObject("ProgressBarFill");
         barFill.transform.SetParent(barBg.transform, false);
@@ -1700,12 +1700,16 @@ public class SnakeGame : MonoBehaviour
         frt.offsetMin = new Vector2(2, 2);
         frt.offsetMax = new Vector2(-2, -2);
 
-        progressText = MakeText(barBg.transform, "ProgressText", 14, TextAnchor.MiddleCenter);
+        progressText = MakeText(barBg.transform, "ProgressText", 24, TextAnchor.MiddleCenter);
+        progressText.supportRichText = true;
         var prt2 = progressText.rectTransform;
         prt2.anchorMin = Vector2.zero;
         prt2.anchorMax = Vector2.one;
         prt2.offsetMin = Vector2.zero;
         prt2.offsetMax = Vector2.zero;
+        var ptol = progressText.gameObject.AddComponent<Outline>();
+        ptol.effectColor = Color.black;
+        ptol.effectDistance = new Vector2(1, 1);
 
         // Message panel (full screen overlay)
         messagePanel = new GameObject("MsgPanel");
@@ -1788,7 +1792,7 @@ public class SnakeGame : MonoBehaviour
         scoreText.text = $"SCORE  {score:D6}";
         levelText.text = level > 10 ? $"ENDLESS {level}" : $"LEVEL {level}";
         progressFill.fillAmount = totalFoodThisLevel > 0 ? (float)foodEatenThisLevel / totalFoodThisLevel : 0;
-        progressText.text = $"{foodEatenThisLevel}/{totalFoodThisLevel}";
+        progressText.text = $"<b>FOOD  {foodEatenThisLevel} / {totalFoodThisLevel}</b>";
 
         if (multiplierText)
         {
