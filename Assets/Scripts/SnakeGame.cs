@@ -95,11 +95,13 @@ public class SnakeGame : MonoBehaviour
 
     // UI
     private Text scoreText, messageText, levelText, progressText, multiplierText;
-    private GameObject messagePanel, pausePanel, splashPanel, creditsPanel;
-    private Text pauseText, splashPressText;
+    private GameObject messagePanel, pausePanel, splashPanel, creditsPanel, instructionsPanel;
+    private Text pauseText, splashPressText, instructionsText, instructionsPageText;
     private Image progressFill;
     private bool showingSplash = true;
     private bool showingCredits;
+    private bool showingInstructions;
+    private int instructionsPage;
     private readonly List<Transform> splashMines = new List<Transform>();
 
     // Tile palette
@@ -130,11 +132,32 @@ public class SnakeGame : MonoBehaviour
         CreateUI();
         CreateSplashScreen();
         CreateCreditsScreen();
+        CreateInstructionsScreen();
         ShowSplash();
     }
 
     private void Update()
     {
+        // Instructions screen
+        if (showingInstructions)
+        {
+            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+            {
+                instructionsPage = Mathf.Min(instructionsPage + 1, 2);
+                UpdateInstructionsPage();
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+            {
+                instructionsPage = Mathf.Max(instructionsPage - 1, 0);
+                UpdateInstructionsPage();
+            }
+            else if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.H))
+            {
+                HideInstructions();
+            }
+            return;
+        }
+
         // Credits screen
         if (showingCredits)
         {
@@ -149,7 +172,11 @@ public class SnakeGame : MonoBehaviour
         if (showingSplash)
         {
             AnimateSplash();
-            if (Input.GetKeyDown(KeyCode.C))
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                ShowInstructions();
+            }
+            else if (Input.GetKeyDown(KeyCode.C))
             {
                 ShowCredits();
             }
@@ -1850,7 +1877,7 @@ public class SnakeGame : MonoBehaviour
         splashPressText.alignment = TextAnchor.MiddleCenter;
         splashPressText.color = Color.white;
         splashPressText.supportRichText = true;
-        splashPressText.text = "<b>PRESS ANY KEY</b>\n<size=26><color=#888888>C \u2014 Credits</color></size>";
+        splashPressText.text = "<b>PRESS ANY KEY</b>\n<size=26><color=#888888>H \u2014 How to Play     C \u2014 Credits</color></size>";
         var prt = splashPressText.rectTransform;
         prt.anchorMin = new Vector2(0, 0.16f);
         prt.anchorMax = new Vector2(1, 0.32f);
@@ -2101,6 +2128,143 @@ public class SnakeGame : MonoBehaviour
     {
         showingCredits = false;
         creditsPanel.SetActive(false);
+        splashPanel.SetActive(true);
+    }
+
+    // ===================== INSTRUCTIONS SCREEN =====================
+
+    private static readonly string[] InstructionPages =
+    {
+        // Page 1: Core Mechanics
+        "<size=64><color=#44DDFF><b>HOW TO PLAY</b></color></size>\n\n" +
+
+        "<size=34><color=#FF4488><b>CONTROLS</b></color></size>\n" +
+        "<size=28><color=#FFFFFF><b>WASD</b> / <b>Arrow Keys</b></color> <color=#AAAAAA>\u2014 Move the snake</color>    " +
+        "<color=#FFFFFF><b>P</b> / <b>Escape</b></color> <color=#AAAAAA>\u2014 Pause</color></size>\n\n" +
+
+        "<size=34><color=#FF4488><b>FOG OF WAR</b></color></size>\n" +
+        "<size=26><color=#CCCCCC>You can only see tiles near your snake's head.\nMines, food, and dangers hide in the darkness.</color></size>\n\n" +
+
+        "<size=34><color=#FF4488><b>FOOD</b></color>  <size=26><color=#FFD700>\u25CF</color></size></size>\n" +
+        "<size=26><color=#CCCCCC>Eat <b>all food</b> on the level to advance.\nEating food makes your snake <b>grow by 1</b>.</color></size>\n\n" +
+
+        "<size=34><color=#FF4488><b>OBSTACLES</b></color>  <size=26><color=#6633AA>\u25A0</color></size></size>\n" +
+        "<size=26><color=#CCCCCC>Dark blocks. <b>Instant death</b> on contact.\nMore appear on higher levels.</color></size>\n\n" +
+
+        "<size=28><color=#888888>\u25C4 \u25BA  Arrow keys to change page    Any other key to close</color></size>",
+
+        // Page 2: Mine Mechanics
+        "<size=64><color=#44DDFF><b>MINES</b></color></size>\n\n" +
+
+        "<size=34><color=#FF4488><b>NUMBER HINTS</b></color>  <size=28><color=#4488FF>1</color> <color=#44CC44>2</color> <color=#FF8800>3</color> <color=#FF2222>4</color></size></size>\n" +
+        "<size=26><color=#CCCCCC>Revealed tiles show <b>how many mines are adjacent</b>.\n" +
+        "Color-coded: <color=#4488FF>1=blue</color>  <color=#44CC44>2=green</color>  <color=#FF8800>3=orange</color>  <color=#FF2222>4=red</color></color></size>\n\n" +
+
+        "<size=34><color=#FF4488><b>MINE HIT</b></color>  <size=26><color=#FF4444>\u2622</color></size></size>\n" +
+        "<size=26><color=#CCCCCC>Snake <b>grows +3</b>, fog shrinks, speed spikes.\nAdjacent mines may <b>chain-detonate</b> (50% each)!</color></size>\n\n" +
+
+        "<size=34><color=#FF4488><b>MINE AVOIDANCE</b></color>  <size=26><color=#44FF88>\u2736</color></size></size>\n" +
+        "<size=26><color=#CCCCCC>Pass next to a mine without hitting it:\nSnake <b>shrinks by 1</b> + bonus points!</color></size>\n\n" +
+
+        "<size=34><color=#FF4488><b>PROXIMITY HEARTBEAT</b></color>  <size=26><color=#FF6666>\u2665</color></size></size>\n" +
+        "<size=26><color=#CCCCCC>A heartbeat gets <b>louder and faster</b>\nas you approach hidden mines.</color></size>\n\n" +
+
+        "<size=28><color=#888888>\u25C4 \u25BA  Arrow keys to change page    Any other key to close</color></size>",
+
+        // Page 3: Advanced Mechanics & Scoring
+        "<size=64><color=#44DDFF><b>ADVANCED</b></color></size>\n\n" +
+
+        "<size=34><color=#FFD700><b>MINE SWEEP</b></color>  <size=26><color=#44FF88>\u2B6E</color></size></size>\n" +
+        "<size=26><color=#CCCCCC>Move your snake through <b>ALL 8 tiles</b> surrounding\n" +
+        "a mine in <b>consecutive moves</b>. The mine is safely\n" +
+        "<b>defused</b> for a <color=#FFD700>massive +100 x level</color> bonus!\n" +
+        "Step away and progress resets. Edge mines need fewer tiles.</color></size>\n\n" +
+
+        "<size=34><color=#FFD700><b>SCORE MULTIPLIER</b></color></size>\n" +
+        "<size=26><color=#CCCCCC>Step on a <color=#4488FF>\"1\"</color> tile = <color=#FFD700>+15 flat bonus</color>\n" +
+        "Step on a <color=#44CC44>\"2\"</color> <color=#FF8800>\"3\"</color> <color=#FF2222>\"4\"</color> tile = <color=#FFD700>that number as score multiplier</color> for 5 seconds!</color></size>\n\n" +
+
+        "<size=34><color=#FF4488><b>SCORING</b></color></size>\n" +
+        "<size=26><color=#CCCCCC>" +
+        "<color=#FFD700>Food</color>  +10 x level     <color=#44FF88>Avoid mine</color>  +25 x level\n" +
+        "<color=#FFD700>Sweep mine</color>  +100 x level     <color=#FF6666>Mine hit</color>  -15 x level\n" +
+        "<color=#FFD700>Level clear</color>  +50 x level     <color=#44DDFF>Win</color>  Clear level 10!</color></size>\n\n" +
+
+        "<size=28><color=#888888>\u25C4 \u25BA  Arrow keys to change page    Any other key to close</color></size>",
+    };
+
+    private void CreateInstructionsScreen()
+    {
+        var canvas = GameObject.Find("Canvas");
+        if (!canvas) return;
+
+        instructionsPanel = new GameObject("InstructionsPanel");
+        instructionsPanel.transform.SetParent(canvas.transform, false);
+        var bg = instructionsPanel.AddComponent<Image>();
+        bg.color = new Color(0.01f, 0.01f, 0.06f, 0.97f);
+        var bgrt = bg.rectTransform;
+        bgrt.anchorMin = Vector2.zero;
+        bgrt.anchorMax = Vector2.one;
+        bgrt.offsetMin = Vector2.zero;
+        bgrt.offsetMax = Vector2.zero;
+
+        // Content text
+        var textGo = new GameObject("InstructionsText");
+        textGo.transform.SetParent(instructionsPanel.transform, false);
+        instructionsText = textGo.AddComponent<Text>();
+        instructionsText.font = GetFont();
+        instructionsText.fontSize = 28;
+        instructionsText.supportRichText = true;
+        instructionsText.alignment = TextAnchor.MiddleCenter;
+        instructionsText.color = Color.white;
+        var trt = instructionsText.rectTransform;
+        trt.anchorMin = new Vector2(0.03f, 0.06f);
+        trt.anchorMax = new Vector2(0.97f, 0.98f);
+        trt.offsetMin = Vector2.zero;
+        trt.offsetMax = Vector2.zero;
+        var tol = textGo.AddComponent<Outline>();
+        tol.effectColor = Color.black;
+        tol.effectDistance = new Vector2(1, 1);
+
+        // Page indicator
+        var pageGo = new GameObject("InstructionsPage");
+        pageGo.transform.SetParent(instructionsPanel.transform, false);
+        instructionsPageText = pageGo.AddComponent<Text>();
+        instructionsPageText.font = GetFont();
+        instructionsPageText.fontSize = 24;
+        instructionsPageText.supportRichText = true;
+        instructionsPageText.alignment = TextAnchor.LowerCenter;
+        instructionsPageText.color = new Color(0.6f, 0.6f, 0.6f);
+        var prt = instructionsPageText.rectTransform;
+        prt.anchorMin = new Vector2(0, 0.01f);
+        prt.anchorMax = new Vector2(1, 0.06f);
+        prt.offsetMin = Vector2.zero;
+        prt.offsetMax = Vector2.zero;
+
+        instructionsPanel.SetActive(false);
+    }
+
+    private void UpdateInstructionsPage()
+    {
+        if (instructionsText)
+            instructionsText.text = InstructionPages[instructionsPage];
+        if (instructionsPageText)
+            instructionsPageText.text = $"<color=#666666>\u2014  Page {instructionsPage + 1} / {InstructionPages.Length}  \u2014</color>";
+    }
+
+    private void ShowInstructions()
+    {
+        showingInstructions = true;
+        instructionsPage = 0;
+        UpdateInstructionsPage();
+        instructionsPanel.SetActive(true);
+        splashPanel.SetActive(false);
+    }
+
+    private void HideInstructions()
+    {
+        showingInstructions = false;
+        instructionsPanel.SetActive(false);
         splashPanel.SetActive(true);
     }
 
