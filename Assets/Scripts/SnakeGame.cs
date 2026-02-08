@@ -2126,25 +2126,54 @@ public class SnakeGame : MonoBehaviour
     }
 
     // ===================== MINE CIRCUMNAVIGATION =====================
+    // The snake must visit all 8 neighbors of a mine (or 5 on edge, 3 on corner)
+    // in CONSECUTIVE moves. If the snake steps onto a non-neighbor tile, progress resets.
+
+    private static readonly Vector2Int[] eightDirs =
+    {
+        new Vector2Int(-1, -1), new Vector2Int(0, -1), new Vector2Int(1, -1),
+        new Vector2Int(-1,  0),                        new Vector2Int(1,  0),
+        new Vector2Int(-1,  1), new Vector2Int(0,  1), new Vector2Int(1,  1),
+    };
+
+    private bool IsNeighborOfMine(Vector2Int head, Vector2Int mine)
+    {
+        int dx = head.x - mine.x;
+        int dy = head.y - mine.y;
+        return dx >= -1 && dx <= 1 && dy >= -1 && dy <= 1 && !(dx == 0 && dy == 0);
+    }
+
+    private int CountInBoundsNeighbors(Vector2Int mine)
+    {
+        int count = 0;
+        foreach (var d in eightDirs)
+        {
+            Vector2Int n = mine + d;
+            if (n.x >= 0 && n.x < gridWidth && n.y >= 0 && n.y < gridHeight)
+                count++;
+        }
+        return count;
+    }
 
     private void UpdateCircumProgress(Vector2Int head)
     {
-        // For each active mine, check if the head is on one of its 4 neighbor tiles
-        Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
         for (int i = 0; i < minePositions.Count; i++)
         {
             Vector2Int mp = minePositions[i];
             if (!mineGrid[mp.x, mp.y]) continue;
 
-            foreach (var dir in dirs)
+            if (IsNeighborOfMine(head, mp))
             {
-                if (head == mp + dir)
-                {
-                    if (!mineCircumProgress.ContainsKey(i))
-                        mineCircumProgress[i] = new HashSet<Vector2Int>();
-                    mineCircumProgress[i].Add(dir);
-                    break;
-                }
+                // Head is on a neighbor — add to visited set
+                if (!mineCircumProgress.ContainsKey(i))
+                    mineCircumProgress[i] = new HashSet<Vector2Int>();
+                mineCircumProgress[i].Add(head);
+            }
+            else
+            {
+                // Head is NOT a neighbor — reset this mine's progress
+                if (mineCircumProgress.ContainsKey(i))
+                    mineCircumProgress[i].Clear();
             }
         }
     }
@@ -2153,7 +2182,6 @@ public class SnakeGame : MonoBehaviour
     {
         var toDefuse = new List<int>();
 
-        // Count how many orthogonal neighbors exist (tiles not off-grid)
         foreach (var kvp in mineCircumProgress)
         {
             int mIdx = kvp.Key;
@@ -2161,18 +2189,8 @@ public class SnakeGame : MonoBehaviour
             Vector2Int mp = minePositions[mIdx];
             if (!mineGrid[mp.x, mp.y]) continue;
 
-            // How many in-bounds neighbors does this mine have?
-            int totalNeighbors = 0;
-            Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
-            foreach (var dir in dirs)
-            {
-                Vector2Int n = mp + dir;
-                if (n.x >= 0 && n.x < gridWidth && n.y >= 0 && n.y < gridHeight)
-                    totalNeighbors++;
-            }
-
-            // Snake head must have visited ALL in-bounds neighbor tiles
-            if (kvp.Value.Count >= totalNeighbors)
+            int needed = CountInBoundsNeighbors(mp);
+            if (kvp.Value.Count >= needed)
                 toDefuse.Add(mIdx);
         }
 
